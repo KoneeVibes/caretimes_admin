@@ -34,6 +34,6 @@ export const sideNavigationItems = [
     {
         name: "Logout",
         icon: <SideNavigationLogoutIcon />,
-        url: "/logout"
+        url: "/"
     },
 ];

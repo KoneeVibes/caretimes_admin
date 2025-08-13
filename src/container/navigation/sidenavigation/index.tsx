@@ -25,7 +25,7 @@ export const SideNavigation: React.FC<SideNavigationPropsType> = ({ avatar, user
 
     const handleNavItemClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, item: string) => {
         e.stopPropagation();
-        item === "Logout" ?
+        item === "/" ?
             // log out user
             navigate("/")
             : navigate(item);
