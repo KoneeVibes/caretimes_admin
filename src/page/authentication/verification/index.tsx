@@ -206,7 +206,7 @@ export const Verification = () => {
                                 <CircularProgress color="inherit" className="loader" />
                             ) : (
                                 <Fragment>
-                                    {" Didn’t Recieve OTP,"}
+                                    {" Didn’t Recieve OTP,"}{" "}
                                     < Typography
                                         component={"span"}
                                         fontFamily={"inherit"}

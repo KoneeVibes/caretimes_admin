@@ -1,7 +1,7 @@
 import { InputBase, styled } from "@mui/material";
 import { BaseInputPropsType } from "../../../type/component.type";
 
-export const BaseInput = styled(InputBase)<BaseInputPropsType>(({ colour, bgcolor, fontweight, fontsize, width, border, borderradius, isError }) => {
+export const BaseInput = styled(InputBase)<BaseInputPropsType>(({ colour, bgcolor, fontweight, fontsize, width, border, borderradius, padding, isError }) => {
     return {
         fontFamily: "Roboto",
         fontWeight: fontweight || 400,
@@ -11,7 +11,7 @@ export const BaseInput = styled(InputBase)<BaseInputPropsType>(({ colour, bgcolo
         borderRadius: borderradius || "10px",
         color: colour || "var(--input-field-text-color)",
         backgroundColor: bgcolor || "transparent",
-        padding: "calc(var(--basic-padding)/2)",
+        padding: padding || "calc(var(--basic-padding)/2)",
         outline: "none",
         width: width || "-webkit-fill-available",
         "& .MuiInputBase-input": {

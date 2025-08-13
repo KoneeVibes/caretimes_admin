@@ -13,19 +13,22 @@
     --dark-color: #000000;
     --error-color: #D92D20;
     --input-field-text-color: #0D0706;
+    --input-field-bg-color: #F5F6FA;
     --input-field-border-color: #E9EAEB;
     --input-field-label-color: #454545;
     --select-field-text-color: #9A9A9A;
     --select-field-border-color: #D9D9D9;
     --form-legend-color: #414141;
     --primary-color-variant: #B77A6C;
+    --primary-color-complement: #DBBDB6;
+    --app-bg-color: #F5F5F5;
 
     --basic-padding: 2rem;
     --basic-margin: 2rem;
     --flex-gap: 2rem;
 
-    --side-nav-width: 20.125rem;
-    --top-nav-height: 7.5rem;
+    --side-nav-width: 100%;
+    --top-nav-height: 5.1875rem;
   }
 
   * {
@@ -35,5 +38,104 @@
   .loader {
     width: calc(0.6 * var(--basic-padding)) !important;
     height: auto !important;
+  }
+
+  /* below are styles pertaining to the side-navigation bar */
+
+  /* styles for the side navigation header comprising of the logo and close button  */
+  .side-navigation-header {
+    gap: calc(var(--flex-gap)/4);
+    justify-content: space-between !important;
+    height: 115px;
+    padding: calc(var(--basic-padding)/2) var(--basic-padding) !important;
+  }
+
+  /* For the side navigation header, styles for the app icon */
+  /* For each side navigation item, styles for the corresponding icon */
+  .side-navigation-header .app-icon,
+  .Side-Nav-Item .MuiListItemIcon-root {
+    flex: 0 1 24px;
+    overflow: hidden;
+    min-width: 0px;
+  }
+
+  /* For the side navigation header, styles for the app icon to counter flex property alone*/
+  .side-navigation-header .app-icon {
+    flex: 0 1 auto;
+  }
+
+  /* For each side navigation item, styles for the corresponding text element */
+  .Side-Nav-Item .MuiListItemText-root {
+    flex: 1 1 0;
+    overflow: hidden;
+  }
+
+  /* For the side navigation header, styles for the logo image itself */
+  .side-navigation-header .app-icon>img {
+    width: 100%;
+    height: auto;
+  }
+
+  /* For the side navigation header, styles for the close icon */
+  .side-navigation-header .close-button {
+    flex: 0 1 auto;
+    overflow: hidden;
+  }
+
+  /* For each side navigation item, styles for the button element */
+  .Side-Nav-Item .MuiListItemButton-root {
+    border-radius: 8px;
+    gap: calc(var(--flex-gap));
+  }
+
+  /* For the logout side navigation item, styles for the button to catch the button text */
+  .Side-Nav-Item.Logout-Side-Nav-Item .MuiListItemButton-root {
+    color: var(--error-color);
+  }
+
+  /* For each side navigation item, styles for the button on hover */
+  .Side-Nav-Item:hover .MuiListItemButton-root {
+    color: var(--light-color);
+    background: var(--primary-color);
+  }
+
+  /* For each side navigation item, styles for the corresponding icon to catch svg>path */
+  .Side-Nav-Item:hover .MuiListItemButton-root .MuiListItemIcon-root>svg>path {
+    fill: var(--light-color);
+  }
+
+  /* For each page, style the corresponding side nav item */
+  #Dashboard .Dashboard-Side-Nav-Item .MuiListItemButton-root,
+  #Orders .Orders-Side-Nav-Item .MuiListItemButton-root,
+  #Inventory .Inventory-Side-Nav-Item .MuiListItemButton-root,
+  #Transactions .Transactions-Side-Nav-Item .MuiListItemButton-root,
+  #Support .Support-Side-Nav-Item .MuiListItemButton-root,
+  #Settings .Settings-Side-Nav-Item .MuiListItemButton-root {
+    color: var(--light-color);
+    background: var(--primary-color);
+  }
+
+  /* For each page, style the corresponding side nav item to catch svg>path */
+  #Dashboard .Dashboard-Side-Nav-Item .MuiListItemButton-root .MuiListItemIcon-root>svg>path,
+  #Orders .Orders-Side-Nav-Item .MuiListItemButton-root .MuiListItemIcon-root>svg>path,
+  #Inventory .Inventory-Side-Nav-Item .MuiListItemButton-root .MuiListItemIcon-root>svg>path,
+  #Transactions .Transactions-Side-Nav-Item .MuiListItemButton-root .MuiListItemIcon-root>svg>path,
+  #Support .Support-Side-Nav-Item .MuiListItemButton-root .MuiListItemIcon-root>svg>path,
+  #Settings .Settings-Side-Nav-Item .MuiListItemButton-root .MuiListItemIcon-root>svg>path {
+    fill: var(--light-color);
+  }
+}
+
+@media screen and (min-width: 425px) {
+
+  html,
+  body,
+  #root {
+    --side-nav-width: 17.3125rem;
+  }
+
+  .side-navigation-header {
+    justify-content: center !important;
+    padding: var(--basic-padding) calc(var(--basic-padding) * 2) calc(var(--basic-padding)/2) !important;
   }
 }
