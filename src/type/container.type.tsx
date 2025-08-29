@@ -1,18 +1,29 @@
 export type AuthLayoutPropsType = {
-    children: React.ReactNode
-}
+	children: React.ReactNode;
+};
 
 export type AppLayoutPropsType = {
-    pageId: string,
-    children: React.ReactNode
-}
+	pageId: string;
+	children: React.ReactNode;
+};
 
 export type SideNavigationPropsType = {
-    role: string,
-    avatar: string,
-    username: string,
-}
+	role: string;
+	avatar: string;
+	username: string;
+};
 
 export type MainAreaPropsType = {
-    children: React.ReactNode
-}
+	children: React.ReactNode;
+};
+
+export type BaseTablePropsType = {
+	rows: Record<any, any>[];
+};
+
+export type OrderTablePropsType = {
+	handleViewDetailsClick: (
+		e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+		id: string | Record<any, any>
+	) => void;
+} & BaseTablePropsType;

@@ -11,6 +11,7 @@
 		--light-color: #ffffff;
 		--dark-color: #000000;
 		--error-color: #d92d20;
+		--success-color: #12b76a;
 		--input-field-text-color: #0d0706;
 		--input-field-bg-color: #f5f6fa;
 		--input-field-border-color: #e9eaeb;
@@ -21,6 +22,10 @@
 		--primary-color-variant: #b77a6c;
 		--primary-color-complement: #dbbdb6;
 		--app-bg-color: #f5f5f5;
+		--dashboard-welcome-message-dark-color: #202224;
+		--dashboard-welcome-message-ash-color: #aaaaaa;
+		--grey-subtitle-color: #a4a7ae;
+		--table-border-color: #f2f2f2;
 
 		--basic-padding: 2rem;
 		--basic-margin: 2rem;
