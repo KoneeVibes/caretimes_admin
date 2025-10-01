@@ -12,18 +12,17 @@ export const BaseSelect = styled(Select)<BaseInputPropsType>(
 		padding,
 		border,
 		isError,
+		radius,
 	}) => {
 		return {
 			fontFamily: fontfamily || "Roboto",
 			fontWeight: fontweight || 500,
 			fontSize: fontsize || "14px",
 			lineHeight: "normal",
-			border:
-				border ||
-				(isError
-					? "1px solid var(--error-color)"
-					: "1px solid var(--select-field-border-color)"),
-			borderRadius: "4px",
+			border: isError
+				? "1px solid var(--error-color)"
+				: border || "1px solid var(--select-field-border-color)",
+			borderRadius: radius || "4px",
 			color: colour || "var(--select-field-text-color)",
 			backgroundColor: bgcolor || "transparent",
 			padding: padding || "calc(var(--basic-padding)/2)",

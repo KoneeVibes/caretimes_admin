@@ -11,4 +11,10 @@ export type ContextType = {
 	setAuthenticatedUser: React.Dispatch<
 		React.SetStateAction<Record<string, any> | null>
 	>;
+	isAddUserFormModalOpen: boolean;
+	setIsAddUserFormModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+	isEditUserFormModalOpen: boolean;
+	setIsEditUserFormModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+	isAlertModalOpen: boolean;
+	setIsAlertModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };

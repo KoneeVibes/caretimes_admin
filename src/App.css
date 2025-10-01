@@ -26,6 +26,14 @@
 		--dashboard-welcome-message-ash-color: #aaaaaa;
 		--grey-subtitle-color: #a4a7ae;
 		--table-border-color: #f2f2f2;
+		--modal-message-text-color: #4c4c4c;
+		--icon-button-bg-color: #faf9fa;
+		--subtitle-text-color: #3b3d3b;
+		--chip-text-color: #6e726e;
+		--badge-text-color: #1d1d1d;
+		--bright-yellow-color: #fdb022;
+		--success-color-variant: #d1fadf;
+		--error-color-variant: #ff0000;
 
 		--basic-padding: 2rem;
 		--basic-margin: 2rem;
@@ -121,7 +129,8 @@
 	#Inventory .Inventory-Side-Nav-Item .MuiListItemButton-root,
 	#Transactions .Transactions-Side-Nav-Item .MuiListItemButton-root,
 	#Support .Support-Side-Nav-Item .MuiListItemButton-root,
-	#Settings .Settings-Side-Nav-Item .MuiListItemButton-root {
+	#Settings .Settings-Side-Nav-Item .MuiListItemButton-root,
+	#Admin-Management .Admin-Management-Side-Nav-Item .MuiListItemButton-root {
 		color: var(--light-color);
 		background: var(--primary-color);
 	}
@@ -162,8 +171,22 @@
 		.MuiListItemButton-root
 		.MuiListItemIcon-root
 		> svg
+		> path,
+	#Admin-Management
+		.Admin-Management-Side-Nav-Item
+		.MuiListItemButton-root
+		.MuiListItemIcon-root
+		> svg
 		> path {
 		fill: var(--light-color);
+	}
+
+	/* Below are styles pertaining to modal components */
+	.add-admin-form-modal .MuiDialog-paper,
+	.edit-admin-form-modal .MuiDialog-paper {
+		border-radius: 16px;
+		max-width: 25rem;
+		width: -webkit-fill-available;
 	}
 }
 

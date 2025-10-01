@@ -4,6 +4,7 @@ export { ReactComponent as SideNavigationInventoryIcon } from "./icon/side-navig
 export { ReactComponent as SideNavigationTransactionsIcon } from "./icon/side-navigation-transactions-icon.svg";
 export { ReactComponent as SideNavigationSupportIcon } from "./icon/side-navigation-support-icon.svg";
 export { ReactComponent as SideNavigationSettingsIcon } from "./icon/side-navigation-settings-icon.svg";
+export { ReactComponent as SideNavigationAdminManagementIcon } from "./icon/side-navigation-admin-management-icon.svg";
 export { ReactComponent as SideNavigationLogoutIcon } from "./icon/side-navigation-logout-icon.svg";
 export { ReactComponent as SearchIcon } from "./icon/search-icon.svg";
 export { ReactComponent as NotificationIcon } from "./icon/top-navigation-notification-icon.svg";
@@ -17,3 +18,6 @@ export { ReactComponent as DashboardCardUpwardTickIcon } from "./icon/dashboard-
 export { ReactComponent as DashboardCardDownwardTickIcon } from "./icon/dashboard-card-downward-tick-icon.svg";
 export { ReactComponent as DownloadIcon } from "./icon/download-icon.svg";
 export { ReactComponent as ForwardArrowIcon } from "./icon/forward-icon.svg";
+export { ReactComponent as SuccessModalIcon } from "./icon/success-modal-icon.svg";
+export { ReactComponent as EditIcon } from "./icon/edit-icon.svg";
+export { ReactComponent as ErrorIcon } from "./icon/error-icon.svg";

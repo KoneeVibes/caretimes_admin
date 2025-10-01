@@ -13,6 +13,9 @@ export const AppContextProvider: React.FC<ContextProviderPropsType> = ({
 	const [isMobileSideNavigationOpen, setIsMobileSideNavigationOpen] =
 		useState(false);
 	const [isSideNavigationClosing, setIsSideNavigationClosing] = useState(false);
+	const [isAddUserFormModalOpen, setIsAddUserFormModalOpen] = useState(false);
+	const [isEditUserFormModalOpen, setIsEditUserFormModalOpen] = useState(false);
+	const [isAlertModalOpen, setIsAlertModalOpen] = useState(false);
 
 	return (
 		<AppContext.Provider
@@ -23,6 +26,12 @@ export const AppContextProvider: React.FC<ContextProviderPropsType> = ({
 				setIsSideNavigationClosing,
 				authenticatedUser,
 				setAuthenticatedUser,
+				isAddUserFormModalOpen,
+				setIsAddUserFormModalOpen,
+				isEditUserFormModalOpen,
+				setIsEditUserFormModalOpen,
+				isAlertModalOpen,
+				setIsAlertModalOpen,
 			}}
 		>
 			{children}

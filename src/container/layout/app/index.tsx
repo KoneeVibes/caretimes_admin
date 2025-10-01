@@ -44,11 +44,13 @@ export const AppLayout: React.FC<AppLayoutPropsType> = ({
 			<SideNavigation
 				avatar={avatar}
 				role={authenticatedUser?.type?.toUpperCase()}
+				type={authenticatedUser?.type}
 				username={`${authenticatedUser?.firstName} ${authenticatedUser?.lastName}`}
 			/>
 			<TopNavigation
 				avatar={avatar}
 				role={authenticatedUser?.type?.toUpperCase()}
+				type={authenticatedUser?.type}
 				username={`${authenticatedUser?.firstName} ${authenticatedUser?.lastName}`}
 			/>
 			<MainArea>{children}</MainArea>

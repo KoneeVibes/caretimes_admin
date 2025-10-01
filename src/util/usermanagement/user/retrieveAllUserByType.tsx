@@ -1,9 +1,17 @@
 import { BASE_ENDPOINT } from "../../endpoint";
 
-export const retrieveLoggedInUserService = async (token: string) => {
+type FilterKeys = "admin" | "distributor";
+
+export const retrieveAllUserByTypeService = async (
+	token: string,
+	filters: { [key in FilterKeys]: boolean }
+) => {
+	const queryParams = new URLSearchParams(
+		Object.fromEntries(Object.entries(filters).map(([k, v]) => [k, String(v)]))
+	).toString();
 	try {
 		const response = await fetch(
-			`${BASE_ENDPOINT}/api/v1/user-management/logged-in-user`,
+			`${BASE_ENDPOINT}/api/v1/user-management/all/user?${queryParams}`,
 			{
 				method: "GET",
 				credentials: "include",

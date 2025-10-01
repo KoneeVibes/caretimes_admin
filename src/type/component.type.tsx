@@ -45,3 +45,36 @@ export type BaseLineGraphPropsType = {
 	showLegend: boolean;
 	showYAxisTick: boolean;
 } & BaseChartPropsType<"line">;
+
+export type BaseAlertModalPropsType = {
+	open: boolean;
+	icon: React.ReactNode;
+	handleClose:
+		| ((
+				event: {} | React.MouseEvent<HTMLButtonElement, MouseEvent>,
+				reason: "backdropClick" | "escapeKeyDown"
+		  ) => void)
+		| undefined;
+	handleCallToAction?: (
+		e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+	) => void;
+	title?: string;
+	message?: string | null;
+	callToAction?: string;
+	callToActionBgColor?: string;
+	className?: string;
+};
+
+export type FormModalPropsType = {
+	open: boolean;
+	handleClickOutside:
+		| ((
+				event: {} | React.MouseEvent<HTMLButtonElement, MouseEvent>,
+				reason: "backdropClick" | "escapeKeyDown"
+		  ) => void)
+		| undefined;
+	handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+	title?: string;
+	children: React.ReactNode;
+	className?: string;
+};

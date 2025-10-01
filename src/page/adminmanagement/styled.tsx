@@ -1,6 +1,6 @@
 import { Stack, styled } from "@mui/material";
 
-export const DashboardWrapper = styled(Stack)(() => {
+export const AdminManagementWrapper = styled(Stack)(() => {
 	return {
 		gap: "var(--flex-gap)",
 		"& .MuiCard-root": {
@@ -18,7 +18,7 @@ export const DashboardWrapper = styled(Stack)(() => {
 		"& .card-content:last-child": {
 			paddingBottom: 0,
 		},
-		"& .order-table-box": {
+		"& .admin-table-box": {
 			"& .MuiTableContainer-root": {
 				"& .MuiTableHead-root": {
 					"& .MuiTableCell-root": {
@@ -26,6 +26,10 @@ export const DashboardWrapper = styled(Stack)(() => {
 					},
 				},
 			},
+		},
+		"& .admin-table-box-footer": {
+			display: "flex",
+			justifyContent: "flex-end",
 		},
 	};
 });

@@ -9,6 +9,7 @@ export type AppLayoutPropsType = {
 
 export type SideNavigationPropsType = {
 	role: string;
+	type: string;
 	avatar: string;
 	username: string;
 };
@@ -27,3 +28,14 @@ export type OrderTablePropsType = {
 		id: string | Record<any, any>
 	) => void;
 } & BaseTablePropsType;
+
+export type AdminTablePropsType = {
+	handleViewDetailsClick: (
+		e: React.MouseEvent<HTMLTableRowElement, MouseEvent>,
+		id: string | Record<any, any>
+	) => void;
+} & BaseTablePropsType;
+
+export type EditUserFormPropsType = {
+	initialFormDetails: Record<string, any>;
+};

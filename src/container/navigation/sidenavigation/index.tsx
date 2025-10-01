@@ -24,9 +24,13 @@ export const SideNavigation: React.FC<SideNavigationPropsType> = ({
 	avatar,
 	username,
 	role,
+	type,
 }) => {
 	const cookies = new Cookies();
 	const TOKEN = cookies.getAll().TOKEN;
+	const authenticatedModules = sideNavigationItems.filter((item) =>
+		item.userType.includes(type)
+	);
 
 	const navigate = useNavigate();
 	const matchesMobileAndAbove = useMediaQuery("(min-width:425px)");
@@ -75,7 +79,7 @@ export const SideNavigation: React.FC<SideNavigationPropsType> = ({
 		return setIsMobileSideNavigationOpen(false);
 	};
 
-	const navItems = sideNavigationItems.map((sideNavItem, index) => {
+	const navItems = authenticatedModules.map((sideNavItem, index) => {
 		return (
 			<ListItem
 				key={index}

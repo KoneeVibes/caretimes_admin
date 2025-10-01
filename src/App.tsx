@@ -11,6 +11,8 @@ import { Transaction } from "./page/transaction";
 import { Support } from "./page/support";
 import { Setting } from "./page/setting";
 import { RouteProtector } from "./config/routeProtector";
+import { AdminManagement } from "./page/adminmanagement";
+import { AdminDetails } from "./page/adminmanagement/admindetails";
 
 function App() {
 	return (
@@ -27,6 +29,8 @@ function App() {
 					<Route path={"/transaction"} element={<Transaction />} />
 					<Route path={"/support"} element={<Support />} />
 					<Route path={"/setting"} element={<Setting />} />
+					<Route path={"/admin-management"} element={<AdminManagement />} />
+					<Route path={"/admin-management/:id"} element={<AdminDetails />} />
 				</Route>
 			</Routes>
 		</BrowserRouter>
