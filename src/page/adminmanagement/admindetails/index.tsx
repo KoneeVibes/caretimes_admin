@@ -38,8 +38,12 @@ export const AdminDetails = () => {
 	const navigate = useNavigate();
 	const { id = "" } = useParams();
 	const matches = useMediaQuery("(max-width:250px)");
-	const { setIsEditUserFormModalOpen, isAlertModalOpen, setIsAlertModalOpen } =
-		useContext(AppContext);
+	const {
+		isEditUserFormModalOpen,
+		setIsEditUserFormModalOpen,
+		isAlertModalOpen,
+		setIsAlertModalOpen,
+	} = useContext(AppContext);
 
 	const [isLoading, setIsLoading] = useState({
 		forDelete: false,
@@ -60,7 +64,13 @@ export const AdminDetails = () => {
 			.catch((err) => {
 				console.error("Failed to fetch selected user:", err);
 			});
-	}, [TOKEN, id, isLoading.forDelete, isLoading.forActivate]);
+	}, [
+		TOKEN,
+		id,
+		isEditUserFormModalOpen,
+		isLoading.forDelete,
+		isLoading.forActivate,
+	]);
 
 	const handleNavigateBackwards = (
 		e: React.MouseEvent<HTMLButtonElement, MouseEvent>
