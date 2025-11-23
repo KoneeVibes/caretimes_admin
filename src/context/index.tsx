@@ -10,12 +10,24 @@ export const AppContextProvider: React.FC<ContextProviderPropsType> = ({
 		string,
 		any
 	> | null>(null);
+	const [isAlertModalOpen, setIsAlertModalOpen] = useState(false);
+	const [alertModalInfo, setAlertModalInfo] = useState<Record<
+		string,
+		any
+	> | null>(null);
 	const [isMobileSideNavigationOpen, setIsMobileSideNavigationOpen] =
 		useState(false);
 	const [isSideNavigationClosing, setIsSideNavigationClosing] = useState(false);
 	const [isAddUserFormModalOpen, setIsAddUserFormModalOpen] = useState(false);
 	const [isEditUserFormModalOpen, setIsEditUserFormModalOpen] = useState(false);
-	const [isAlertModalOpen, setIsAlertModalOpen] = useState(false);
+	const [isAddProductFormModalOpen, setIsAddProductFormModalOpen] =
+		useState(false);
+	const [isEditProductFormModalOpen, setIsEditProductFormModalOpen] =
+		useState(false);
+	const [isAddCategoryFormModalOpen, setIsAddCategoryFormModalOpen] =
+		useState(false);
+	const [isEditCategoryFormModalOpen, setIsEditCategoryFormModalOpen] =
+		useState(false);
 
 	return (
 		<AppContext.Provider
@@ -32,6 +44,16 @@ export const AppContextProvider: React.FC<ContextProviderPropsType> = ({
 				setIsEditUserFormModalOpen,
 				isAlertModalOpen,
 				setIsAlertModalOpen,
+				alertModalInfo,
+				setAlertModalInfo,
+				isAddProductFormModalOpen,
+				setIsAddProductFormModalOpen,
+				isEditProductFormModalOpen,
+				setIsEditProductFormModalOpen,
+				isAddCategoryFormModalOpen,
+				setIsAddCategoryFormModalOpen,
+				isEditCategoryFormModalOpen,
+				setIsEditCategoryFormModalOpen,
 			}}
 		>
 			{children}

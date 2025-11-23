@@ -1,16 +1,18 @@
 import { BASE_ENDPOINT } from "../endpoint";
 
-export const forgotPasswordService = async (payload: any) => {
+export const deleteProductService = async (
+	token: string,
+	productId: string
+) => {
 	try {
 		const response = await fetch(
-			`${BASE_ENDPOINT}/api/v1/admin-interface/auth/forgot-password`,
+			`${BASE_ENDPOINT}/api/v1/admin-interface/product/single/${productId}`,
 			{
-				method: "POST",
-				credentials: "include",
+				method: "DELETE",
 				headers: {
+					Authorization: `Bearer ${token}`,
 					"Content-Type": "application/json",
 				},
-				body: JSON.stringify(payload),
 			}
 		);
 		const res = await response.json();

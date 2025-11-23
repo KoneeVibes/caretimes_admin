@@ -3,7 +3,7 @@ import { BASE_ENDPOINT } from "../../endpoint";
 export const retrieveLoggedInUserService = async (token: string) => {
 	try {
 		const response = await fetch(
-			`${BASE_ENDPOINT}/api/v1/user-management/logged-in-user`,
+			`${BASE_ENDPOINT}/api/v1/admin-interface/user-management/logged-in-user`,
 			{
 				method: "GET",
 				credentials: "include",

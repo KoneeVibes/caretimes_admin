@@ -13,6 +13,7 @@ import { Setting } from "./page/setting";
 import { RouteProtector } from "./config/routeProtector";
 import { AdminManagement } from "./page/adminmanagement";
 import { AdminDetails } from "./page/adminmanagement/admindetails";
+import { InventoryDetails } from "./page/inventory/inventorydetails";
 
 function App() {
 	return (
@@ -26,6 +27,7 @@ function App() {
 					<Route path={"/dashboard"} element={<Dashboard />} />
 					<Route path={"/order"} element={<Order />} />
 					<Route path={"/inventory"} element={<Inventory />} />
+					<Route path={"/inventory/:id"} element={<InventoryDetails />} />
 					<Route path={"/transaction"} element={<Transaction />} />
 					<Route path={"/support"} element={<Support />} />
 					<Route path={"/setting"} element={<Setting />} />

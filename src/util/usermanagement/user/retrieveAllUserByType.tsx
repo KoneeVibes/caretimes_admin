@@ -11,7 +11,7 @@ export const retrieveAllUserByTypeService = async (
 	).toString();
 	try {
 		const response = await fetch(
-			`${BASE_ENDPOINT}/api/v1/user-management/all/user?${queryParams}`,
+			`${BASE_ENDPOINT}/api/v1/admin-interface/user-management/all/user?${queryParams}`,
 			{
 				method: "GET",
 				credentials: "include",

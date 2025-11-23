@@ -13,6 +13,10 @@ import {
 	SideNavigationSupportIcon,
 	SideNavigationTransactionsIcon,
 	SideNavigationAdminManagementIcon,
+	InventoryTotalProductItemsIcon,
+	InventoryApprovedProductsIcon,
+	InventoryPendingProductsIcon,
+	InventoryRejectedProductsIcon,
 } from "../asset";
 
 export const sideNavigationItems = [
@@ -70,38 +74,65 @@ export const dashboardCards = [
 	{
 		name: "Customers",
 		amount: 2000,
-		weeklyTraction: +2.5,
+		traction: +2.5,
 		icon: <DashboardCustomerIcon />,
 	},
 	{
 		name: "Transactions",
 		amount: 500000,
-		weeklyTraction: -2.5,
+		traction: -2.5,
 		icon: <DashboardTransactionIcon />,
 	},
 	{
 		name: "Issues",
 		amount: 3,
-		weeklyTraction: +2.5,
+		traction: +2.5,
 		icon: <DashboardIssueIcon />,
 	},
 	{
 		name: "Completed Orders",
 		amount: 3000,
-		weeklyTraction: 0,
+		traction: 0,
 		icon: <DashboardCompletedOrderIcon />,
 	},
 	{
 		name: "Active Orders",
 		amount: 8,
-		weeklyTraction: 0,
+		traction: 0,
 		icon: <DashboardActiveOrderIcon />,
 	},
 	{
 		name: "Unsettled Funds",
 		amount: 10000,
-		weeklyTraction: 0,
+		traction: 0,
 		icon: <DashboardUnsettledFundIcon />,
+	},
+];
+
+export const inventorySummaryCards = [
+	{
+		name: "Total Product Items",
+		amount: 2342,
+		traction: 0,
+		icon: <InventoryTotalProductItemsIcon />,
+	},
+	{
+		name: "Approved Products",
+		amount: 2000,
+		traction: -2.5,
+		icon: <InventoryApprovedProductsIcon />,
+	},
+	{
+		name: "Pending Products",
+		amount: 300,
+		traction: +2.5,
+		icon: <InventoryPendingProductsIcon />,
+	},
+	{
+		name: "Rejected Products",
+		amount: 42,
+		traction: 0,
+		icon: <InventoryRejectedProductsIcon />,
 	},
 ];
 

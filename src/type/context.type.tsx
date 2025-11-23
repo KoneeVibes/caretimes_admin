@@ -17,4 +17,16 @@ export type ContextType = {
 	setIsEditUserFormModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
 	isAlertModalOpen: boolean;
 	setIsAlertModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+	alertModalInfo: Record<string, any> | null;
+	setAlertModalInfo: React.Dispatch<
+		React.SetStateAction<Record<string, any> | null>
+	>;
+	isAddProductFormModalOpen: boolean;
+	setIsAddProductFormModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+	isEditProductFormModalOpen: boolean;
+	setIsEditProductFormModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+	isAddCategoryFormModalOpen: boolean;
+	setIsAddCategoryFormModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+	isEditCategoryFormModalOpen: boolean;
+	setIsEditCategoryFormModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };

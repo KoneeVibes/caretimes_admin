@@ -3,7 +3,7 @@ import { BASE_ENDPOINT } from "../../endpoint";
 export const activateUserService = async (token: string, userId: string) => {
 	try {
 		const response = await fetch(
-			`${BASE_ENDPOINT}/api/v1/user-management/user/${userId}/activate-user`,
+			`${BASE_ENDPOINT}/api/v1/admin-interface/user-management/user/${userId}/activate-user`,
 			{
 				method: "PATCH",
 				headers: {

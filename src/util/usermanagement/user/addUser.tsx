@@ -7,7 +7,7 @@ export const addUserService = async (
 ) => {
 	try {
 		const response = await fetch(
-			`${BASE_ENDPOINT}/api/v1/user-management/${type}/add-user`,
+			`${BASE_ENDPOINT}/api/v1/admin-interface/user-management/${type}/add-user`,
 			{
 				method: "POST",
 				headers: {

@@ -36,6 +36,21 @@ export type AdminTablePropsType = {
 	) => void;
 } & BaseTablePropsType;
 
+export type InventoryTablePropsType = {
+	handleViewDetailsClick: (
+		e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+		id: string | Record<any, any>
+	) => void;
+} & BaseTablePropsType;
+
 export type EditUserFormPropsType = {
+	initialFormDetails: Record<string, any>;
+};
+
+export type EditProductFormPropsType = {
+	initialFormDetails: Record<string, any>;
+};
+
+export type EditCategoryFormPropsType = {
 	initialFormDetails: Record<string, any>;
 };

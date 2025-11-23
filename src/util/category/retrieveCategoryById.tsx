@@ -1,16 +1,19 @@
 import { BASE_ENDPOINT } from "../endpoint";
 
-export const forgotPasswordService = async (payload: any) => {
+export const retrieveCategoryByIdService = async (
+	token: string,
+	id: string
+) => {
 	try {
 		const response = await fetch(
-			`${BASE_ENDPOINT}/api/v1/admin-interface/auth/forgot-password`,
+			`${BASE_ENDPOINT}/api/v1/admin-interface/category/single/${id}`,
 			{
-				method: "POST",
+				method: "GET",
 				credentials: "include",
 				headers: {
+					Authorization: `Bearer ${token}`,
 					"Content-Type": "application/json",
 				},
-				body: JSON.stringify(payload),
 			}
 		);
 		const res = await response.json();
@@ -18,7 +21,7 @@ export const forgotPasswordService = async (payload: any) => {
 			console.error("Error:", res);
 			throw new Error(res.message);
 		}
-		return res;
+		return res.data;
 	} catch (error) {
 		console.error("API fetch error:", error);
 		throw error;

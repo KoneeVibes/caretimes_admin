@@ -165,9 +165,9 @@ export const Dashboard = () => {
 													gap={"calc(var(--flex-gap)/4)"}
 												>
 													<Box overflow={"hidden"} display={"flex"}>
-														{Number(card.weeklyTraction) > 0 ? (
+														{Number(card.traction) > 0 ? (
 															<DashboardCardUpwardTickIcon />
-														) : Number(card.weeklyTraction) < 0 ? (
+														) : Number(card.traction) < 0 ? (
 															<DashboardCardDownwardTickIcon />
 														) : null}
 													</Box>
@@ -180,7 +180,7 @@ export const Dashboard = () => {
 															lineHeight={"normal"}
 															color="var(--success-color)"
 														>
-															{Number(card?.weeklyTraction) > 0 ? (
+															{Number(card?.traction) > 0 ? (
 																<Typography
 																	component={"span"}
 																	fontFamily={"inherit"}
@@ -189,9 +189,9 @@ export const Dashboard = () => {
 																	lineHeight={"inherit"}
 																	color="inherit"
 																>
-																	{card?.weeklyTraction}
+																	{card?.traction}
 																</Typography>
-															) : Number(card.weeklyTraction) < 0 ? (
+															) : Number(card.traction) < 0 ? (
 																<Typography
 																	component={"span"}
 																	fontFamily={"inherit"}
@@ -200,7 +200,7 @@ export const Dashboard = () => {
 																	lineHeight={"inherit"}
 																	color="var(--error-color)"
 																>
-																	{card?.weeklyTraction}
+																	{card?.traction}
 																</Typography>
 															) : null}
 														</Typography>

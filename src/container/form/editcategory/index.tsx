@@ -1,38 +1,44 @@
-import Cookies from "universal-cookie";
-import { useContext, useState } from "react";
-import { BaseFormModal } from "../../../component/modal/form";
-import { AddUserFormWrapper } from "./styled";
-import { AppContext } from "../../../context";
 import { Box, CircularProgress, Grid, Typography } from "@mui/material";
+import { BaseFormModal } from "../../../component/modal/form";
+import { EditCategoryFormWrapper } from "./styled";
+import { useContext, useEffect, useState } from "react";
+import { AppContext } from "../../../context";
+import Cookies from "universal-cookie";
+import { EditCategoryFormPropsType } from "../../../type/container.type";
+import { editCategoryService } from "../../../util/category/editCategory";
 import { BaseFieldSet } from "../../../component/form/fieldset/styled";
 import { BaseInput } from "../../../component/form/input/styled";
 import { BaseSelect } from "../../../component/form/select/styled";
 import { BaseOption } from "../../../component/form/option/styled";
-import { addUserService } from "../../../util/usermanagement/user/addUser";
 import { BaseButton } from "../../../component/button/styled";
 
-export const AddUserForm = () => {
+export const EditCategoryForm: React.FC<EditCategoryFormPropsType> = ({
+	initialFormDetails,
+}) => {
 	const cookies = new Cookies();
 	const TOKEN = cookies.getAll().TOKEN;
 
-	const userTypes = ["admin", "distributor"];
-	const initialFormDetails = {
-		firstName: "",
-		lastName: "",
-		email: "",
-		phone: "",
-		type: " ",
-	};
+	const status = ["active", "inactive"];
 
 	const {
-		isAddUserFormModalOpen,
-		setIsAddUserFormModalOpen,
+		isEditCategoryFormModalOpen,
+		setIsEditCategoryFormModalOpen,
 		setIsAlertModalOpen,
 	} = useContext(AppContext);
 
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 	const [formDetails, setFormDetails] = useState(initialFormDetails);
+
+	useEffect(() => {
+		setFormDetails(initialFormDetails);
+	}, [initialFormDetails]);
+
+	const handleClickOutside = () => {
+		setError(null);
+		setIsEditCategoryFormModalOpen(false);
+		setFormDetails(initialFormDetails);
+	};
 
 	const handleChange = (
 		e:
@@ -52,50 +58,43 @@ export const AddUserForm = () => {
 		}));
 	};
 
-	const handleClickOutside = () => {
-		setError(null);
-		setFormDetails(initialFormDetails);
-		setIsAddUserFormModalOpen(false);
-	};
-
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		if (!formDetails.type.trim()) return;
+		if (!formDetails.status.trim() || !formDetails.id.trim()) return;
 		setError(null);
 		setIsLoading(true);
 		try {
-			const response = await addUserService(
+			const response = await editCategoryService(
 				TOKEN,
-				formDetails.type,
+				formDetails.id,
 				formDetails
 			);
 			if (response.status === "success") {
 				setIsLoading(false);
-				setIsAddUserFormModalOpen(false);
-				setFormDetails(initialFormDetails);
+				setIsEditCategoryFormModalOpen(false);
 				setIsAlertModalOpen(true);
 			} else {
 				setIsLoading(false);
 				setError(
-					"Action: Add admin failed. Please check your credentials and try again."
+					"Action: Edit category failed. Please check your credentials and try again."
 				);
 			}
 		} catch (error: any) {
 			setIsLoading(false);
-			setError(`Add admin failed. ${error.message}`);
-			console.error("Add admin failed:", error);
+			setError(`Edit category failed. ${error.message}`);
+			console.error("Edit category failed:", error);
 		}
 	};
 
 	return (
 		<BaseFormModal
-			open={isAddUserFormModalOpen}
+			open={isEditCategoryFormModalOpen}
 			handleClickOutside={handleClickOutside}
 			handleSubmit={handleSubmit}
-			title="Create Admin"
-			className="add-admin-form-modal"
+			title="Edit Category"
+			className="edit-category-form-modal"
 		>
-			<AddUserFormWrapper>
+			<EditCategoryFormWrapper>
 				{error && (
 					<Box>
 						<Typography
@@ -112,25 +111,13 @@ export const AddUserForm = () => {
 					</Box>
 				)}
 				<Grid container spacing={"calc(var(--flex-gap)/2)"}>
-					<Grid size={{ mobile: 12, miniTablet: 6 }}>
+					<Grid size={{ mobile: 12 }}>
 						<BaseFieldSet>
 							<BaseInput
 								required
-								name="firstName"
-								value={formDetails.firstName}
-								placeholder="First Name"
-								isError={error ? true : false}
-								onChange={(e) => handleChange(e)}
-							/>
-						</BaseFieldSet>
-					</Grid>
-					<Grid size={{ mobile: 12, miniTablet: 6 }}>
-						<BaseFieldSet>
-							<BaseInput
-								required
-								name="lastName"
-								value={formDetails.lastName}
-								placeholder="Last Name"
+								name="name"
+								value={formDetails.name}
+								placeholder="Enter Category Name"
 								isError={error ? true : false}
 								onChange={(e) => handleChange(e)}
 							/>
@@ -139,22 +126,11 @@ export const AddUserForm = () => {
 					<Grid size={{ mobile: 12 }}>
 						<BaseFieldSet>
 							<BaseInput
-								required
-								name="email"
-								value={formDetails.email}
-								placeholder="Email Address"
-								isError={error ? true : false}
-								onChange={(e) => handleChange(e)}
-							/>
-						</BaseFieldSet>
-					</Grid>
-					<Grid size={{ mobile: 12 }}>
-						<BaseFieldSet>
-							<BaseInput
-								required
-								name="phone"
-								value={formDetails.phone}
-								placeholder="Phone Number"
+								multiline
+								minRows={4}
+								name="description"
+								value={formDetails.description}
+								placeholder="Enter Description"
 								isError={error ? true : false}
 								onChange={(e) => handleChange(e)}
 							/>
@@ -163,20 +139,20 @@ export const AddUserForm = () => {
 					<Grid size={{ mobile: 12 }}>
 						<BaseFieldSet>
 							<BaseSelect
-								name="type"
+								name="status"
 								radius="10px"
 								fontsize="16px"
 								fontweight={400}
-								value={formDetails.type}
+								value={formDetails.status}
 								isError={error ? true : false}
 								onChange={(e) => handleChange(e)}
 								colour="var(--input-field-text-color)"
 								border="1px solid var(--input-field-border-color)"
 							>
 								<BaseOption value=" " fontsize="16px" fontweight={400}>
-									Select User Type
+									Select Status
 								</BaseOption>
-								{userTypes.map((type: string, index: number) => (
+								{status.map((type: string, index: number) => (
 									<BaseOption
 										key={index}
 										value={type}
@@ -217,7 +193,7 @@ export const AddUserForm = () => {
 						)}
 					</BaseButton>
 				</Box>
-			</AddUserFormWrapper>
+			</EditCategoryFormWrapper>
 		</BaseFormModal>
 	);
 };

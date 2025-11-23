@@ -3,7 +3,7 @@ import { BASE_ENDPOINT } from "../../endpoint";
 export const retrieveUserByIdService = async (token: string, id: string) => {
 	try {
 		const response = await fetch(
-			`${BASE_ENDPOINT}/api/v1/user-management/user/${id}`,
+			`${BASE_ENDPOINT}/api/v1/admin-interface/user-management/single/user/${id}`,
 			{
 				method: "GET",
 				credentials: "include",

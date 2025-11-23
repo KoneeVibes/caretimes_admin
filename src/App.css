@@ -34,6 +34,11 @@
 		--bright-yellow-color: #fdb022;
 		--success-color-variant: #d1fadf;
 		--error-color-variant: #ff0000;
+		--drawer-header-text-color: #2d2d2d;
+		--badge-bg-color: #f6eeed;
+		--drawer-subtitle-text-color: #424257;
+		--drawer-item-border-color: #0000001a;
+		--product-detail-header-color: #22222233;
 
 		--basic-padding: 2rem;
 		--basic-margin: 2rem;
@@ -41,6 +46,7 @@
 
 		--side-nav-width: 100%;
 		--top-nav-height: 5.1875rem;
+		--manage-category-modal-width: 100%;
 		--side-navigation-header-height: calc(
 			var(--top-nav-height) + var(--basic-padding)
 		);
@@ -183,10 +189,48 @@
 
 	/* Below are styles pertaining to modal components */
 	.add-admin-form-modal .MuiDialog-paper,
-	.edit-admin-form-modal .MuiDialog-paper {
+	.edit-admin-form-modal .MuiDialog-paper,
+	.add-product-form-modal .MuiDialog-paper,
+	.edit-product-form-modal .MuiDialog-paper,
+	.add-category-form-modal .MuiDialog-paper,
+	.edit-category-form-modal .MuiDialog-paper {
 		border-radius: 16px;
 		max-width: 25rem;
 		width: -webkit-fill-available;
+	}
+
+	/* Below are styles pertaining to manage category modal */
+	.manage-category-drawer-box .title-bar {
+		top: 0;
+		position: fixed;
+		overflow: hidden;
+		flex-direction: row;
+		align-items: center;
+		width: -webkit-fill-available;
+		gap: calc(var(--flex-gap) / 2);
+		justify-content: space-between;
+		padding: calc(var(--basic-padding));
+		border: 0.5px solid var(--select-field-text-color);
+	}
+
+	.manage-category-drawer-box .modal-call-to-action {
+		bottom: 0;
+		position: fixed;
+		overflow: hidden;
+		width: -webkit-fill-available;
+		gap: calc(var(--flex-gap) / 2);
+		padding: calc(var(--basic-padding));
+	}
+
+	.manage-category-drawer-box .modal-items {
+		top: 5.9rem;
+		bottom: 11.5rem;
+		position: fixed;
+		overflow-y: auto;
+		overflow-x: hidden;
+		width: -webkit-fill-available;
+		gap: calc(var(--flex-gap) / 4);
+		padding: 0 calc(var(--basic-padding));
 	}
 }
 
@@ -201,5 +245,13 @@
 		justify-content: center !important;
 		padding: var(--basic-padding) calc(var(--basic-padding) * 2)
 			calc(var(--basic-padding) / 2) !important;
+	}
+}
+
+@media screen and (min-width: 768px) {
+	html,
+	body,
+	#root {
+		--manage-category-modal-width: 29.875rem;
 	}
 }

@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import logo from "../../../asset/logo.png";
 import { AppContext } from "../../../context";
 import { sideNavigationItems } from "../../../config/static";
@@ -19,6 +19,8 @@ import { Close } from "@mui/icons-material";
 import { SideNavigationPropsType } from "../../../type/container.type";
 import { signOutUserService } from "../../../util/authentication/signout";
 import Cookies from "universal-cookie";
+import { BaseAlertModal } from "../../../component/modal/alert";
+import { ErrorIcon } from "../../../asset";
 
 export const SideNavigation: React.FC<SideNavigationPropsType> = ({
 	avatar,
@@ -40,6 +42,8 @@ export const SideNavigation: React.FC<SideNavigationPropsType> = ({
 		setIsMobileSideNavigationOpen,
 	} = useContext(AppContext);
 
+	const [isAlertModalOpen, setIsAlertModalOpen] = useState(false);
+
 	const handleDrawerClose = () => {
 		setIsSideNavigationClosing(true);
 		setIsMobileSideNavigationOpen(false);
@@ -50,7 +54,7 @@ export const SideNavigation: React.FC<SideNavigationPropsType> = ({
 	};
 
 	const handleLogOutUser = async (
-		e: React.MouseEvent<HTMLDivElement, MouseEvent>
+		e: React.MouseEvent<HTMLButtonElement, MouseEvent>
 	) => {
 		e.preventDefault();
 		try {
@@ -72,11 +76,23 @@ export const SideNavigation: React.FC<SideNavigationPropsType> = ({
 	) => {
 		e.stopPropagation();
 		if (destination === "/") {
-			await handleLogOutUser(e);
-			return navigate(destination);
+			return setIsAlertModalOpen(true);
 		}
 		navigate(destination);
 		return setIsMobileSideNavigationOpen(false);
+	};
+
+	const handleAlertModalClickOutside = () => {
+		return setIsAlertModalOpen(false);
+	};
+
+	const handleAlertModalCallToActionClick = async (
+		e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+	) => {
+		e.preventDefault();
+		await handleLogOutUser(e);
+		setIsAlertModalOpen(false);
+		return navigate("/", { replace: true });
 	};
 
 	const navItems = authenticatedModules.map((sideNavItem, index) => {
@@ -106,6 +122,17 @@ export const SideNavigation: React.FC<SideNavigationPropsType> = ({
 
 	return (
 		<Box>
+			<BaseAlertModal
+				callToAction="Proceed"
+				open={isAlertModalOpen}
+				icon={<ErrorIcon />}
+				title="Log out"
+				className="log-out-modal"
+				handleClose={handleAlertModalClickOutside}
+				callToActionBgColor="var(--error-color)"
+				handleCallToAction={handleAlertModalCallToActionClick}
+				message="You are about to log out, proceed with action?"
+			/>
 			<Drawer
 				variant="temporary"
 				open={isMobileSideNavigationOpen}

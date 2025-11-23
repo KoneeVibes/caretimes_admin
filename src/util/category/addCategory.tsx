@@ -1,13 +1,13 @@
 import { BASE_ENDPOINT } from "../endpoint";
 
-export const forgotPasswordService = async (payload: any) => {
+export const addCategoryService = async (token: string, payload: any) => {
 	try {
 		const response = await fetch(
-			`${BASE_ENDPOINT}/api/v1/admin-interface/auth/forgot-password`,
+			`${BASE_ENDPOINT}/api/v1/admin-interface/category/add-category`,
 			{
 				method: "POST",
-				credentials: "include",
 				headers: {
+					Authorization: `Bearer ${token}`,
 					"Content-Type": "application/json",
 				},
 				body: JSON.stringify(payload),
