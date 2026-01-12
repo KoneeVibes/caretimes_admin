@@ -1,19 +1,20 @@
-import { BASE_ENDPOINT } from "../endpoint";
+import { BASE_ENDPOINT } from "../../endpoint";
 
-export const editCategoryService = async (
+export const managePermissionsService = async (
 	token: string,
-	categoryId: string,
+	userId: string,
 	payload: any
 ) => {
 	try {
 		const response = await fetch(
-			`${BASE_ENDPOINT}/api/v1/admin-interface/category/${categoryId}/update-category`,
+			`${BASE_ENDPOINT}/api/v1/admin-interface/user-management/access-control/${userId}/manage-permissions`,
 			{
 				method: "PATCH",
 				headers: {
 					Authorization: `Bearer ${token}`,
+					"Content-Type": "application/json",
 				},
-				body: payload,
+				body: JSON.stringify(payload),
 			}
 		);
 		const res = await response.json();

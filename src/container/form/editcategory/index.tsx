@@ -1,7 +1,7 @@
-import { Box, CircularProgress, Grid, Typography } from "@mui/material";
+import { Box, Chip, CircularProgress, Grid, Typography } from "@mui/material";
 import { BaseFormModal } from "../../../component/modal/form";
 import { EditCategoryFormWrapper } from "./styled";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { AppContext } from "../../../context";
 import Cookies from "universal-cookie";
 import { EditCategoryFormPropsType } from "../../../type/container.type";
@@ -24,7 +24,9 @@ export const EditCategoryForm: React.FC<EditCategoryFormPropsType> = ({
 		isEditCategoryFormModalOpen,
 		setIsEditCategoryFormModalOpen,
 		setIsAlertModalOpen,
+		setAlertModalInfo,
 	} = useContext(AppContext);
+	const fileInputRef = useRef<HTMLInputElement | null>(null);
 
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
@@ -40,6 +42,16 @@ export const EditCategoryForm: React.FC<EditCategoryFormPropsType> = ({
 		setFormDetails(initialFormDetails);
 	};
 
+	const handleDeleteImage = () => {
+		setFormDetails((prev) => ({
+			...prev,
+			thumbnail: null,
+		}));
+		if (fileInputRef.current) {
+			fileInputRef.current.value = "";
+		}
+	};
+
 	const handleChange = (
 		e:
 			| React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -51,11 +63,19 @@ export const EditCategoryForm: React.FC<EditCategoryFormPropsType> = ({
 					};
 			  })
 	) => {
-		const { name, value } = e.target;
-		setFormDetails((prev) => ({
-			...prev,
-			[name]: value,
-		}));
+		const { name, value, type, files } = e.target as HTMLInputElement;
+		if (type === "file") {
+			const file = files?.[0] || null;
+			setFormDetails((prev) => ({
+				...prev,
+				[name]: file,
+			}));
+		} else {
+			setFormDetails((prev) => ({
+				...prev,
+				[name]: value,
+			}));
+		}
 	};
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -63,16 +83,35 @@ export const EditCategoryForm: React.FC<EditCategoryFormPropsType> = ({
 		if (!formDetails.status.trim() || !formDetails.id.trim()) return;
 		setError(null);
 		setIsLoading(true);
+		const formData = new FormData();
+		const data = {
+			name: formDetails.name,
+			status: formDetails.status,
+			description: formDetails.description,
+			thumbnail: formDetails.thumbnail,
+		};
+		Object.entries(data).forEach(([key, value]) => {
+			if (value === null || value === undefined) return;
+			if (value instanceof File) {
+				formData.append(key, value);
+			} else {
+				formData.append(key, String(value));
+			}
+		});
 		try {
 			const response = await editCategoryService(
 				TOKEN,
 				formDetails.id,
-				formDetails
+				formData
 			);
 			if (response.status === "success") {
 				setIsLoading(false);
 				setIsEditCategoryFormModalOpen(false);
 				setIsAlertModalOpen(true);
+				setAlertModalInfo({
+					title: "Category updated successfully",
+					message: "The category has been successfully updated. ",
+				});
 			} else {
 				setIsLoading(false);
 				setError(
@@ -122,6 +161,25 @@ export const EditCategoryForm: React.FC<EditCategoryFormPropsType> = ({
 								onChange={(e) => handleChange(e)}
 							/>
 						</BaseFieldSet>
+					</Grid>
+					<Grid size={{ mobile: 12 }}>
+						<BaseInput
+							type="file"
+							name="thumbnail"
+							inputRef={fileInputRef}
+							inputProps={{
+								accept: ".jpeg,.jpg,.png",
+							}}
+							onChange={handleChange}
+						/>
+						{formDetails.thumbnail && (
+							<Box marginBlockStart={"calc(var(--basic-margin)/4)"}>
+								<Chip
+									label={formDetails.thumbnail.name}
+									onDelete={handleDeleteImage}
+								/>
+							</Box>
+						)}
 					</Grid>
 					<Grid size={{ mobile: 12 }}>
 						<BaseFieldSet>

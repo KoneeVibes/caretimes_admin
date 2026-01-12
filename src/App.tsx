@@ -8,8 +8,8 @@ import { Dashboard } from "./page/dashboard";
 import { Order } from "./page/order";
 import { Inventory } from "./page/inventory";
 import { Transaction } from "./page/transaction";
-import { Support } from "./page/support";
-import { Setting } from "./page/setting";
+// import { Support } from "./page/support";
+// import { Setting } from "./page/setting";
 import { RouteProtector } from "./config/routeProtector";
 import { AdminManagement } from "./page/adminmanagement";
 import { AdminDetails } from "./page/adminmanagement/admindetails";
@@ -29,8 +29,8 @@ function App() {
 					<Route path={"/inventory"} element={<Inventory />} />
 					<Route path={"/inventory/:id"} element={<InventoryDetails />} />
 					<Route path={"/transaction"} element={<Transaction />} />
-					<Route path={"/support"} element={<Support />} />
-					<Route path={"/setting"} element={<Setting />} />
+					{/* <Route path={"/support"} element={<Support />} />
+					<Route path={"/setting"} element={<Setting />} /> */}
 					<Route path={"/admin-management"} element={<AdminManagement />} />
 					<Route path={"/admin-management/:id"} element={<AdminDetails />} />
 				</Route>

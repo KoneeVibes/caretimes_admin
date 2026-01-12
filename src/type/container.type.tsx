@@ -54,3 +54,18 @@ export type EditProductFormPropsType = {
 export type EditCategoryFormPropsType = {
 	initialFormDetails: Record<string, any>;
 };
+
+export type ManagePermissionsFormType = {
+	permissions: {
+		module: string;
+		status: string;
+	}[];
+	setPermissions: React.Dispatch<
+		React.SetStateAction<
+			{
+				module: string;
+				status: string;
+			}[]
+		>
+	>;
+};

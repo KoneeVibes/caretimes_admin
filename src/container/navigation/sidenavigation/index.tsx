@@ -21,6 +21,8 @@ import { signOutUserService } from "../../../util/authentication/signout";
 import Cookies from "universal-cookie";
 import { BaseAlertModal } from "../../../component/modal/alert";
 import { ErrorIcon } from "../../../asset";
+import { useQuery } from "@tanstack/react-query";
+import { retrievePermissionsService } from "../../../util/usermanagement/accesscontrol/retrievePermissions";
 
 export const SideNavigation: React.FC<SideNavigationPropsType> = ({
 	avatar,
@@ -30,19 +32,44 @@ export const SideNavigation: React.FC<SideNavigationPropsType> = ({
 }) => {
 	const cookies = new Cookies();
 	const TOKEN = cookies.getAll().TOKEN;
-	const authenticatedModules = sideNavigationItems.filter((item) =>
-		item.userType.includes(type)
-	);
 
 	const navigate = useNavigate();
 	const matchesMobileAndAbove = useMediaQuery("(min-width:425px)");
 	const {
+		authenticatedUser,
 		setIsSideNavigationClosing,
 		isMobileSideNavigationOpen,
 		setIsMobileSideNavigationOpen,
 	} = useContext(AppContext);
 
 	const [isAlertModalOpen, setIsAlertModalOpen] = useState(false);
+
+	const { data: permissions } = useQuery<
+		{
+			module: string;
+			status: string;
+		}[]
+	>({
+		queryKey: [`authenticated-user-permissions`, TOKEN],
+		queryFn: async () => {
+			const response = await retrievePermissionsService(
+				TOKEN,
+				authenticatedUser?.id
+			);
+			return response;
+		},
+		enabled: !!TOKEN && !!authenticatedUser?.id,
+	});
+
+	const authenticatedModules = sideNavigationItems.filter(
+		(item) =>
+			item.userType.includes(type) &&
+			(item.name === "Logout" ||
+				permissions?.some(
+					(permission: Record<string, any>) =>
+						permission.module === item.name && permission.status !== "inactive"
+				))
+	);
 
 	const handleDrawerClose = () => {
 		setIsSideNavigationClosing(true);

@@ -12,7 +12,7 @@ import {
 	useMediaQuery,
 } from "@mui/material";
 import { AppLayout } from "../../container/layout/app";
-import { InventoryWrapper, CategorySwitch } from "./styled";
+import { InventoryWrapper } from "./styled";
 import { BaseButton } from "../../component/button/styled";
 import { useContext, useEffect, useMemo, useState } from "react";
 import { AppContext } from "../../context";
@@ -38,6 +38,7 @@ import { retrieveAllCategoryService } from "../../util/category/retrieveAllCateg
 import { useNavigate } from "react-router-dom";
 import { EditCategoryForm } from "../../container/form/editcategory";
 import { editCategoryService } from "../../util/category/editCategory";
+import { SwitchField } from "../../component/form/switch/styled";
 
 export const Inventory = () => {
 	const cookies = new Cookies();
@@ -67,6 +68,18 @@ export const Inventory = () => {
 		any
 	> | null>(null);
 
+	const convertUrlToFile = async (url: string): Promise<File | null> => {
+		try {
+			const response = await fetch(url);
+			const blob = await response.blob();
+			const name = url.split("/category/")[1] ?? "file";
+			return new File([blob], name, { type: blob.type });
+		} catch (err) {
+			console.error("Failed to fetch attachment:", url, err);
+			return null;
+		}
+	};
+
 	const { data: allProduct } = useQuery({
 		queryKey: [`all-product`, TOKEN],
 		queryFn: async () => {
@@ -80,6 +93,18 @@ export const Inventory = () => {
 		queryKey: [`all-category`, TOKEN],
 		queryFn: async () => {
 			const response = await retrieveAllCategoryService(TOKEN);
+			if (Array.isArray(response)) {
+				const transformedResponse = await Promise.all(
+					response.map(async (category: any) => {
+						if (typeof category?.thumbnail === "string" && category.thumbnail) {
+							const file = await convertUrlToFile(category.thumbnail);
+							return { ...category, thumbnail: file ?? category.thumbnail };
+						}
+						return category;
+					})
+				);
+				return transformedResponse;
+			}
 			return response;
 		},
 		enabled: !!TOKEN,
@@ -319,7 +344,7 @@ export const Inventory = () => {
 										</Typography>
 									</Box>
 									<Box overflow={"hidden"} flexShrink={matches ? 1 : 0}>
-										<CategorySwitch
+										<SwitchField
 											checked={category?.status === "active"}
 											onChange={(e) =>
 												handleToggleCategoryActivation(e, category)

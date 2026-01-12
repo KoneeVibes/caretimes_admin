@@ -1,9 +1,9 @@
-import { useContext, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import { BaseFormModal } from "../../../component/modal/form";
 import { AddCategoryFormWrapper } from "./styled";
 import { AppContext } from "../../../context";
 import Cookies from "universal-cookie";
-import { Box, CircularProgress, Grid, Typography } from "@mui/material";
+import { Box, Chip, CircularProgress, Grid, Typography } from "@mui/material";
 import { BaseFieldSet } from "../../../component/form/fieldset/styled";
 import { BaseInput } from "../../../component/form/input/styled";
 import { addCategoryService } from "../../../util/category/addCategory";
@@ -18,6 +18,7 @@ export const AddCategoryForm = () => {
 	const initialFormDetails = {
 		name: "",
 		description: "",
+		thumbnail: null as File | null,
 		status: " ",
 	};
 	const status = ["active", "inactive"];
@@ -28,6 +29,7 @@ export const AddCategoryForm = () => {
 		setIsAlertModalOpen,
 		setAlertModalInfo,
 	} = useContext(AppContext);
+	const fileInputRef = useRef<HTMLInputElement | null>(null);
 
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
@@ -44,11 +46,19 @@ export const AddCategoryForm = () => {
 					};
 			  })
 	) => {
-		const { name, value } = e.target;
-		setFormDetails((prev) => ({
-			...prev,
-			[name]: value,
-		}));
+		const { name, value, type, files } = e.target as HTMLInputElement;
+		if (type === "file") {
+			const file = files?.[0] || null;
+			setFormDetails((prev) => ({
+				...prev,
+				[name]: file,
+			}));
+		} else {
+			setFormDetails((prev) => ({
+				...prev,
+				[name]: value,
+			}));
+		}
 	};
 
 	const handleClickOutside = () => {
@@ -57,13 +67,38 @@ export const AddCategoryForm = () => {
 		setIsAddCategoryFormModalOpen(false);
 	};
 
+	const handleDeleteImage = () => {
+		setFormDetails((prev) => ({
+			...prev,
+			thumbnail: null,
+		}));
+		if (fileInputRef.current) {
+			fileInputRef.current.value = "";
+		}
+	};
+
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		if (!formDetails.status.trim()) return;
 		setError(null);
 		setIsLoading(true);
+		const formData = new FormData();
+		const data = {
+			name: formDetails.name,
+			status: formDetails.status,
+			description: formDetails.description,
+			thumbnail: formDetails.thumbnail,
+		};
+		Object.entries(data).forEach(([key, value]) => {
+			if (value === null || value === undefined) return;
+			if (value instanceof File) {
+				formData.append(key, value);
+			} else {
+				formData.append(key, String(value));
+			}
+		});
 		try {
-			const response = await addCategoryService(TOKEN, formDetails);
+			const response = await addCategoryService(TOKEN, formData);
 			if (response.status === "success") {
 				setIsLoading(false);
 				setIsAddCategoryFormModalOpen(false);
@@ -122,6 +157,25 @@ export const AddCategoryForm = () => {
 								onChange={(e) => handleChange(e)}
 							/>
 						</BaseFieldSet>
+					</Grid>
+					<Grid size={{ mobile: 12 }}>
+						<BaseInput
+							type="file"
+							name="thumbnail"
+							inputRef={fileInputRef}
+							inputProps={{
+								accept: ".jpeg,.jpg,.png",
+							}}
+							onChange={handleChange}
+						/>
+						{formDetails.thumbnail && (
+							<Box marginBlockStart={"calc(var(--basic-margin)/4)"}>
+								<Chip
+									label={formDetails.thumbnail.name}
+									onDelete={handleDeleteImage}
+								/>
+							</Box>
+						)}
 					</Grid>
 					<Grid size={{ mobile: 12 }}>
 						<BaseFieldSet>
