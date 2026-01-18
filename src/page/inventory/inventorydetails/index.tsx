@@ -43,11 +43,13 @@ export const InventoryDetails = () => {
 		setIsEditProductFormModalOpen,
 	} = useContext(AppContext);
 
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const [error, setError] = useState<string | null>(null);
 	const [selectedProduct, setSelectedProduct] = useState<Record<
 		string,
 		any
 	> | null>(null);
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const [isLoading, setIsLoading] = useState({
 		forDisable: false,
 		forApprove: false,
@@ -172,7 +174,7 @@ export const InventoryDetails = () => {
 				</Stack>
 				<Grid container component={"div"} spacing={"var(--flex-gap)"}>
 					<Grid
-						order={{ mobile: 2, laptop: 1 }}
+						order={{ mobile: 2, laptop: 3 }}
 						size={{ mobile: 12, laptop: 6 }}
 					>
 						<Card
@@ -319,7 +321,7 @@ export const InventoryDetails = () => {
 												sx={{
 													width: "100%",
 												}}
-												// onClick={handleApproveProduct}
+												// onClick={handleManageProduct}
 											>
 												{isLoading.forApprove ? (
 													<CircularProgress
@@ -448,11 +450,7 @@ export const InventoryDetails = () => {
 						</Card>
 					</Grid>
 					<Grid order={3} size={{ mobile: 12, laptop: 6 }}>
-						<Stack
-							height={"100%"}
-							gap={"calc(var(--flex-gap))"}
-							justifyContent={"space-between"}
-						>
+						<Stack height={"100%"} gap={"calc(var(--flex-gap))"}>
 							<Card
 								sx={{
 									boxShadow: "none",
@@ -551,7 +549,10 @@ export const InventoryDetails = () => {
 							</Card>
 						</Stack>
 					</Grid>
-					<Grid order={4} size={{ mobile: 12, laptop: 6 }}>
+					<Grid
+						order={{ mobile: 4, laptop: 1 }}
+						size={{ mobile: 12, laptop: 6 }}
+					>
 						<Stack height={"100%"} gap={"calc(var(--flex-gap))"}>
 							<Card
 								sx={{

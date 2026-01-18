@@ -1,16 +1,9 @@
 import { BASE_ENDPOINT } from "../endpoint";
 
-export const retrieveAllProductService = async (
-	token: string,
-	query?: string[]
-) => {
-	const params = new URLSearchParams();
-	query?.forEach((filter) => {
-		params.append("filter", filter);
-	});
+export const retrieveCategoryOverviewService = async (token: string) => {
 	try {
 		const response = await fetch(
-			`${BASE_ENDPOINT}/api/v1/admin-interface/product/all?${params.toString()}`,
+			`${BASE_ENDPOINT}/api/v1/admin-interface/category/overview`,
 			{
 				method: "GET",
 				credentials: "include",
