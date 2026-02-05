@@ -40,6 +40,7 @@ export const InventoryDetails = () => {
 	const {
 		isAlertModalOpen,
 		setIsAlertModalOpen,
+		authenticatedUser,
 		setIsEditProductFormModalOpen,
 	} = useContext(AppContext);
 
@@ -97,14 +98,14 @@ export const InventoryDetails = () => {
 	});
 
 	const handleNavigateBackwards = (
-		e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+		e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
 	) => {
 		e.preventDefault();
 		return navigate(-1);
 	};
 
 	const handleOpenEditProductModal = (
-		e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+		e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
 	) => {
 		e.preventDefault();
 		if (!selectedProduct) return; //loader goes here
@@ -116,7 +117,7 @@ export const InventoryDetails = () => {
 	};
 
 	const handleAlertModalCallToActionClick = async (
-		e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+		e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
 	) => {
 		e.preventDefault();
 		return setIsAlertModalOpen(false);
@@ -210,7 +211,7 @@ export const InventoryDetails = () => {
 										{Array.from(
 											{
 												length: Math.ceil(
-													selectedProduct?.imageUrls?.length / 3
+													selectedProduct?.imageUrls?.length / 3,
 												),
 											},
 											(_, groupIndex) => {
@@ -218,7 +219,7 @@ export const InventoryDetails = () => {
 												const groupThumbnails =
 													selectedProduct?.imageUrls?.slice(
 														startIndex,
-														startIndex + 3
+														startIndex + 3,
 													);
 												return (
 													<Fragment key={groupIndex}>
@@ -265,7 +266,7 @@ export const InventoryDetails = () => {
 														</Grid>
 													</Fragment>
 												);
-											}
+											},
 										)}
 									</Grid>
 								</Stack>
@@ -308,75 +309,79 @@ export const InventoryDetails = () => {
 												<EditIcon />
 											</IconButton>
 										</Box>
-										<Box overflow={"hidden"}>
-											<BaseButton
-												variant="outlined"
-												disableElevation
-												// disabled={
-												// 	selectedProduct?.status === "active" ||
-												// 	isLoading.forApprove
-												// }
-												colour="var(--success-color)"
-												border="1px solid var(--success-color)"
-												sx={{
-													width: "100%",
-												}}
-												// onClick={handleManageProduct}
-											>
-												{isLoading.forApprove ? (
-													<CircularProgress
-														color="inherit"
-														className="loader"
-													/>
-												) : (
-													<Typography
-														variant={"button"}
-														fontFamily={"inherit"}
-														fontWeight={"inherit"}
-														fontSize={"inherit"}
-														lineHeight={"inherit"}
-														color={"inherit"}
-														textTransform={"inherit"}
-													>
-														Approve Product
-													</Typography>
-												)}
-											</BaseButton>
-										</Box>
-										<Box overflow={"hidden"}>
-											<BaseButton
-												variant="contained"
-												disableElevation
-												// disabled={
-												// 	selectedProduct?.status === "inactive" ||
-												// 	isLoading.forDisable
-												// }
-												bgcolor="var(--error-color-variant)"
-												sx={{
-													width: "100%",
-												}}
-												// onClick={handleDisableProduct}
-											>
-												{isLoading.forDisable ? (
-													<CircularProgress
-														color="inherit"
-														className="loader"
-													/>
-												) : (
-													<Typography
-														variant={"button"}
-														fontFamily={"inherit"}
-														fontWeight={"inherit"}
-														fontSize={"inherit"}
-														lineHeight={"inherit"}
-														color={"inherit"}
-														textTransform={"inherit"}
-													>
-														Disable Product
-													</Typography>
-												)}
-											</BaseButton>
-										</Box>
+										{authenticatedUser?.type === "super-admin" && (
+											<Box overflow={"hidden"}>
+												<BaseButton
+													variant="outlined"
+													disableElevation
+													// disabled={
+													// 	selectedProduct?.status === "active" ||
+													// 	isLoading.forApprove
+													// }
+													colour="var(--success-color)"
+													border="1px solid var(--success-color)"
+													sx={{
+														width: "100%",
+													}}
+													// onClick={handleManageProduct}
+												>
+													{isLoading.forApprove ? (
+														<CircularProgress
+															color="inherit"
+															className="loader"
+														/>
+													) : (
+														<Typography
+															variant={"button"}
+															fontFamily={"inherit"}
+															fontWeight={"inherit"}
+															fontSize={"inherit"}
+															lineHeight={"inherit"}
+															color={"inherit"}
+															textTransform={"inherit"}
+														>
+															Approve Product
+														</Typography>
+													)}
+												</BaseButton>
+											</Box>
+										)}
+										{authenticatedUser?.type === "super-admin" && (
+											<Box overflow={"hidden"}>
+												<BaseButton
+													variant="contained"
+													disableElevation
+													// disabled={
+													// 	selectedProduct?.status === "inactive" ||
+													// 	isLoading.forDisable
+													// }
+													bgcolor="var(--error-color-variant)"
+													sx={{
+														width: "100%",
+													}}
+													// onClick={handleDisableProduct}
+												>
+													{isLoading.forDisable ? (
+														<CircularProgress
+															color="inherit"
+															className="loader"
+														/>
+													) : (
+														<Typography
+															variant={"button"}
+															fontFamily={"inherit"}
+															fontWeight={"inherit"}
+															fontSize={"inherit"}
+															lineHeight={"inherit"}
+															color={"inherit"}
+															textTransform={"inherit"}
+														>
+															Disable Product
+														</Typography>
+													)}
+												</BaseButton>
+											</Box>
+										)}
 									</Stack>
 									<Card
 										sx={{
@@ -426,7 +431,7 @@ export const InventoryDetails = () => {
 															{categories?.map(
 																(
 																	category: Record<string, any>,
-																	index: number
+																	index: number,
 																) => (
 																	<BaseOption
 																		key={index}
@@ -437,7 +442,7 @@ export const InventoryDetails = () => {
 																		{category?.name.charAt(0).toUpperCase() +
 																			category?.name.slice(1)}
 																	</BaseOption>
-																)
+																),
 															)}
 														</BaseSelect>
 													</BaseFieldSet>
