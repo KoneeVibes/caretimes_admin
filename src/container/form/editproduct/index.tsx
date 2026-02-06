@@ -30,6 +30,7 @@ export const EditProductForm: React.FC<EditProductFormPropsType> = ({
 	const status = ["active", "inactive"];
 
 	const {
+		setAlertModalInfo,
 		isEditProductFormModalOpen,
 		setIsEditProductFormModalOpen,
 		setIsAlertModalOpen,
@@ -45,7 +46,7 @@ export const EditProductForm: React.FC<EditProductFormPropsType> = ({
 		queryFn: async () => {
 			const response = await retrieveAllCategoryService(TOKEN);
 			const filteredResponse = response.filter((category: any) =>
-				["active"].includes(category.status)
+				["active"].includes(category.status),
 			);
 			return filteredResponse;
 		},
@@ -67,7 +68,7 @@ export const EditProductForm: React.FC<EditProductFormPropsType> = ({
 						value: unknown;
 						name: string;
 					};
-			  })
+			  }),
 	) => {
 		const { name, type, value, files } = e.target as HTMLInputElement;
 		if (type === "file") {
@@ -127,22 +128,25 @@ export const EditProductForm: React.FC<EditProductFormPropsType> = ({
 			const response = await editProductService(
 				TOKEN,
 				formDetails.id,
-				formData
+				formData,
 			);
 			if (response.status === "success") {
-				setIsLoading(false);
+				setAlertModalInfo({
+					title: "Product updated successfully",
+					message: "The product has been successfully updated.",
+				});
 				setIsEditProductFormModalOpen(false);
 				setIsAlertModalOpen(true);
 			} else {
-				setIsLoading(false);
 				setError(
-					"Action: Edit product failed. Please check your credentials and try again."
+					"Action: Edit product failed. Please check your credentials and try again.",
 				);
 			}
 		} catch (error: any) {
-			setIsLoading(false);
 			setError(`Edit product failed. ${error.message}`);
 			console.error("Edit product failed:", error);
+		} finally {
+			setIsLoading(false);
 		}
 	};
 
@@ -210,7 +214,7 @@ export const EditProductForm: React.FC<EditProductFormPropsType> = ({
 											{category?.name.charAt(0).toUpperCase() +
 												category?.name.slice(1)}
 										</BaseOption>
-									)
+									),
 								)}
 							</BaseSelect>
 						</BaseFieldSet>

@@ -72,8 +72,8 @@ export const Inventory = () => {
 		string,
 		any
 	> | null>(null);
-	const [filters, setFilters] = useState<("active" | "inactive" | "pending")[]>(
-		["active"]
+	const [filters, setFilters] = useState<("active" | "disabled" | "pending")[]>(
+		["active"],
 	);
 
 	const convertUrlToFile = async (url: string): Promise<File | null> => {
@@ -126,8 +126,8 @@ export const Inventory = () => {
 			icon: <InventoryPendingProductsIcon />,
 		},
 		{
-			name: "Rejected Products",
-			amount: productOverview?.inactiveProduct ?? 0,
+			name: "Disabled Products",
+			amount: productOverview?.disabledProduct ?? 0,
 			traction: 0,
 			icon: <InventoryRejectedProductsIcon />,
 		},
@@ -154,7 +154,7 @@ export const Inventory = () => {
 							return { ...category, thumbnail: file ?? category.thumbnail };
 						}
 						return category;
-					})
+					}),
 				);
 				return transformedResponse;
 			}
@@ -166,7 +166,7 @@ export const Inventory = () => {
 	const allProductWithCategoryName = useMemo(() => {
 		if (!allProduct || !allCategory) return [];
 		const categoryMap = Object.fromEntries(
-			allCategory.map((c: { id: any; name: any }) => [c.id, c.name])
+			allCategory.map((c: { id: any; name: any }) => [c.id, c.name]),
 		);
 		return allProduct.map((p: { category: string | number }) => ({
 			...p,
@@ -175,14 +175,14 @@ export const Inventory = () => {
 	}, [allProduct, allCategory]);
 
 	const handleOpenAddProductFormModal = (
-		e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+		e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
 	) => {
 		e.preventDefault();
 		return setIsAddProductFormModalOpen(true);
 	};
 
 	const handleOpenAddCategoryFormModal = (
-		e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+		e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
 	) => {
 		e.preventDefault();
 		return setIsAddCategoryFormModalOpen(true);
@@ -194,7 +194,7 @@ export const Inventory = () => {
 
 	const handlePagination = (
 		e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-		type: "previous" | "next"
+		type: "previous" | "next",
 	) => {
 		e.preventDefault();
 		switch (type) {
@@ -213,7 +213,7 @@ export const Inventory = () => {
 
 	const handleNavigateToInventoryDetail = (
 		e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-		id: string | Record<any, any>
+		id: string | Record<any, any>,
 	) => {
 		e.preventDefault();
 		return navigate(`/inventory/${id}`);
@@ -221,7 +221,7 @@ export const Inventory = () => {
 
 	const handleToggleFilter = (
 		e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-		incomingFilters: ("active" | "inactive" | "pending")[]
+		incomingFilters: ("active" | "disabled" | "pending")[],
 	) => {
 		e.preventDefault();
 		setFilters((prev) => {
@@ -241,7 +241,7 @@ export const Inventory = () => {
 	};
 
 	const handleAlertModalCallToActionClick = async (
-		e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+		e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
 	) => {
 		e.preventDefault();
 		setAlertModalInfo(null);
@@ -254,7 +254,7 @@ export const Inventory = () => {
 		e:
 			| React.ChangeEvent<HTMLInputElement>
 			| React.MouseEvent<HTMLButtonElement, MouseEvent>,
-		category: "*" | Record<string, any>
+		category: "*" | Record<string, any>,
 	) => {
 		e.stopPropagation();
 		try {
@@ -268,7 +268,7 @@ export const Inventory = () => {
 							status: "active",
 						};
 						await editCategoryService(TOKEN, category?.id, updatedCategory);
-					})
+					}),
 				);
 				queryClient.invalidateQueries({ queryKey: ["all-category", TOKEN] });
 				return setIsActivating(false);
@@ -287,7 +287,7 @@ export const Inventory = () => {
 
 	const handleOpenEditCategory = (
 		e: React.MouseEvent<HTMLParagraphElement, MouseEvent>,
-		category: Record<string, any>
+		category: Record<string, any>,
 	) => {
 		e.stopPropagation();
 		setSelectedCategory(category);
@@ -745,33 +745,33 @@ export const Inventory = () => {
 															"calc(var(--basic-padding)/2) calc(var(--basic-padding))",
 													},
 													border: (
-														["active", "inactive", "pending"] as const
+														["active", "disabled", "pending"] as const
 													).every((status) => filters.includes(status))
 														? "none"
 														: "1px solid var(--input-field-text-color)",
 													color: (
-														["active", "inactive", "pending"] as const
+														["active", "disabled", "pending"] as const
 													).every((status) => filters.includes(status))
 														? "var(--light-color)"
 														: "var(--dark-color)",
 													background: (
-														["active", "inactive", "pending"] as const
+														["active", "disabled", "pending"] as const
 													).every((status) => filters.includes(status))
 														? "var(--primary-color)"
 														: "var(--light-color)",
 													"&:hover": {
 														border: (
-															["active", "inactive", "pending"] as const
+															["active", "disabled", "pending"] as const
 														).every((status) => filters.includes(status))
 															? "none"
 															: "1px solid var(--input-field-text-color)",
 														color: (
-															["active", "inactive", "pending"] as const
+															["active", "disabled", "pending"] as const
 														).every((status) => filters.includes(status))
 															? "var(--light-color)"
 															: "var(--dark-color)",
 														background: (
-															["active", "inactive", "pending"] as const
+															["active", "disabled", "pending"] as const
 														).every((status) => filters.includes(status))
 															? "var(--primary-color)"
 															: "var(--light-color)",
@@ -780,7 +780,7 @@ export const Inventory = () => {
 												onClick={(e) =>
 													handleToggleFilter(e, [
 														"active",
-														"inactive",
+														"disabled",
 														"pending",
 													])
 												}
@@ -812,33 +812,33 @@ export const Inventory = () => {
 															"calc(var(--basic-padding)/2) calc(var(--basic-padding))",
 													},
 													border: filters.some((filter) =>
-														["active"].includes(filter)
+														["active"].includes(filter),
 													)
 														? "none"
 														: "1px solid var(--input-field-text-color)",
 													color: filters.some((filter) =>
-														["active"].includes(filter)
+														["active"].includes(filter),
 													)
 														? "var(--light-color)"
 														: "var(--dark-color)",
 													background: filters.some((filter) =>
-														["active"].includes(filter)
+														["active"].includes(filter),
 													)
 														? "var(--primary-color)"
 														: "var(--light-color)",
 													"&:hover": {
 														border: filters.some((filter) =>
-															["active"].includes(filter)
+															["active"].includes(filter),
 														)
 															? "none"
 															: "1px solid var(--input-field-text-color)",
 														color: filters.some((filter) =>
-															["active"].includes(filter)
+															["active"].includes(filter),
 														)
 															? "var(--light-color)"
 															: "var(--dark-color)",
 														background: filters.some((filter) =>
-															["active"].includes(filter)
+															["active"].includes(filter),
 														)
 															? "var(--primary-color)"
 															: "var(--light-color)",
@@ -873,33 +873,33 @@ export const Inventory = () => {
 															"calc(var(--basic-padding)/2) calc(var(--basic-padding))",
 													},
 													border: filters.some((filter) =>
-														["pending"].includes(filter)
+														["pending"].includes(filter),
 													)
 														? "none"
 														: "1px solid var(--input-field-text-color)",
 													color: filters.some((filter) =>
-														["pending"].includes(filter)
+														["pending"].includes(filter),
 													)
 														? "var(--light-color)"
 														: "var(--dark-color)",
 													background: filters.some((filter) =>
-														["pending"].includes(filter)
+														["pending"].includes(filter),
 													)
 														? "var(--primary-color)"
 														: "var(--light-color)",
 													"&:hover": {
 														border: filters.some((filter) =>
-															["pending"].includes(filter)
+															["pending"].includes(filter),
 														)
 															? "none"
 															: "1px solid var(--input-field-text-color)",
 														color: filters.some((filter) =>
-															["pending"].includes(filter)
+															["pending"].includes(filter),
 														)
 															? "var(--light-color)"
 															: "var(--dark-color)",
 														background: filters.some((filter) =>
-															["pending"].includes(filter)
+															["pending"].includes(filter),
 														)
 															? "var(--primary-color)"
 															: "var(--light-color)",
@@ -934,39 +934,39 @@ export const Inventory = () => {
 															"calc(var(--basic-padding)/2) calc(var(--basic-padding))",
 													},
 													border: filters.some((filter) =>
-														["inactive"].includes(filter)
+														["disabled"].includes(filter),
 													)
 														? "none"
 														: "1px solid var(--input-field-text-color)",
 													color: filters.some((filter) =>
-														["inactive"].includes(filter)
+														["disabled"].includes(filter),
 													)
 														? "var(--light-color)"
 														: "var(--dark-color)",
 													background: filters.some((filter) =>
-														["inactive"].includes(filter)
+														["disabled"].includes(filter),
 													)
 														? "var(--primary-color)"
 														: "var(--light-color)",
 													"&:hover": {
 														border: filters.some((filter) =>
-															["inactive"].includes(filter)
+															["disabled"].includes(filter),
 														)
 															? "none"
 															: "1px solid var(--input-field-text-color)",
 														color: filters.some((filter) =>
-															["inactive"].includes(filter)
+															["disabled"].includes(filter),
 														)
 															? "var(--light-color)"
 															: "var(--dark-color)",
 														background: filters.some((filter) =>
-															["inactive"].includes(filter)
+															["disabled"].includes(filter),
 														)
 															? "var(--primary-color)"
 															: "var(--light-color)",
 													},
 												}}
-												onClick={(e) => handleToggleFilter(e, ["inactive"])}
+												onClick={(e) => handleToggleFilter(e, ["disabled"])}
 											>
 												<Typography
 													variant={"button"}

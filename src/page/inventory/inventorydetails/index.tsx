@@ -28,6 +28,8 @@ import { EditIcon, ErrorIcon, SuccessModalIcon } from "../../../asset";
 import { AppContext } from "../../../context";
 import { EditProductForm } from "../../../container/form/editproduct";
 import { BaseAlertModal } from "../../../component/modal/alert";
+import { approveProductService } from "../../../util/product/approveProduct";
+import { disableProductService } from "../../../util/product/disableProduct";
 
 export const InventoryDetails = () => {
 	const cookies = new Cookies();
@@ -40,17 +42,17 @@ export const InventoryDetails = () => {
 	const {
 		isAlertModalOpen,
 		setIsAlertModalOpen,
+		alertModalInfo,
+		setAlertModalInfo,
 		authenticatedUser,
 		setIsEditProductFormModalOpen,
 	} = useContext(AppContext);
 
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const [error, setError] = useState<string | null>(null);
 	const [selectedProduct, setSelectedProduct] = useState<Record<
 		string,
 		any
 	> | null>(null);
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const [isLoading, setIsLoading] = useState({
 		forDisable: false,
 		forApprove: false,
@@ -123,6 +125,80 @@ export const InventoryDetails = () => {
 		return setIsAlertModalOpen(false);
 	};
 
+	const handleApproveProduct = async (
+		e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+		productId: string,
+	) => {
+		e.preventDefault();
+		if (!productId.trim()) return;
+		setError(null);
+		setIsLoading((prev) => ({ ...prev, forApprove: true }));
+		try {
+			const response = await approveProductService(TOKEN, productId);
+			if (response.status === "success") {
+				setAlertModalInfo({
+					title: "Product approved successfully",
+					message: "The product has been successfully approved.",
+				});
+			} else {
+				setAlertModalInfo({
+					title: "Product approval failed",
+					message: "The product has been failed to be approved.",
+				});
+				setError(
+					"Action: Approve product failed. Please check your credentials and try again.",
+				);
+			}
+		} catch (error: any) {
+			setAlertModalInfo({
+				title: "Product approval failed",
+				message: "The product has been failed to be approved.",
+			});
+			setError(`Approve product failed. ${error.message}`);
+			console.error("Approve product failed:", error);
+		} finally {
+			setIsLoading((prev) => ({ ...prev, forApprove: false }));
+			setIsAlertModalOpen(true);
+		}
+	};
+
+	const handleDisableProduct = async (
+		e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+		productId: string,
+	) => {
+		e.preventDefault();
+		if (!productId.trim()) return;
+		setError(null);
+		setIsLoading((prev) => ({ ...prev, forDisable: true }));
+		try {
+			const response = await disableProductService(TOKEN, productId);
+			if (response.status === "success") {
+				setAlertModalInfo({
+					title: "Product disabled successfully",
+					message: "The product has been successfully disabled.",
+				});
+			} else {
+				setAlertModalInfo({
+					title: "Product disable failed",
+					message: "The product has been failed to be disabled.",
+				});
+				setError(
+					"Action: Disable product failed. Please check your credentials and try again.",
+				);
+			}
+		} catch (error: any) {
+			setAlertModalInfo({
+				title: "Product disable failed",
+				message: "The product has been failed to be disabled.",
+			});
+			setError(`Disable product failed. ${error.message}`);
+			console.error("Disable product failed:", error);
+		} finally {
+			setIsLoading((prev) => ({ ...prev, forDisable: false }));
+			setIsAlertModalOpen(true);
+		}
+	};
+
 	return (
 		<AppLayout pageId="Inventory">
 			<InventoryDetailsWrapper>
@@ -132,15 +208,15 @@ export const InventoryDetails = () => {
 				<BaseAlertModal
 					callToAction="Close"
 					open={isAlertModalOpen}
-					icon={error ? <ErrorIcon /> : <SuccessModalIcon />}
-					title={error ? "Error" : "Product updated successfully"}
+					title={alertModalInfo?.title}
+					message={alertModalInfo?.message}
 					className="edit-product-successful-modal"
 					handleClose={handleAlertModalClickOutside}
+					icon={error ? <ErrorIcon /> : <SuccessModalIcon />}
+					handleCallToAction={handleAlertModalCallToActionClick}
 					callToActionBgColor={
 						error ? "var(--error-color)" : "var(--success-color)"
 					}
-					handleCallToAction={handleAlertModalCallToActionClick}
-					message={error ? null : "The product has been successfully updated."}
 				/>
 				<Stack
 					direction={"row"}
@@ -314,16 +390,19 @@ export const InventoryDetails = () => {
 												<BaseButton
 													variant="outlined"
 													disableElevation
-													// disabled={
-													// 	selectedProduct?.status === "active" ||
-													// 	isLoading.forApprove
-													// }
+													disabled={
+														["active", "inactive", "disabled"].includes(
+															selectedProduct?.status,
+														) || isLoading.forApprove
+													}
 													colour="var(--success-color)"
 													border="1px solid var(--success-color)"
 													sx={{
 														width: "100%",
 													}}
-													// onClick={handleManageProduct}
+													onClick={(e) =>
+														handleApproveProduct(e, selectedProduct?.id)
+													}
 												>
 													{isLoading.forApprove ? (
 														<CircularProgress
@@ -351,15 +430,17 @@ export const InventoryDetails = () => {
 												<BaseButton
 													variant="contained"
 													disableElevation
-													// disabled={
-													// 	selectedProduct?.status === "inactive" ||
-													// 	isLoading.forDisable
-													// }
+													disabled={
+														selectedProduct?.status === "disabled" ||
+														isLoading.forDisable
+													}
 													bgcolor="var(--error-color-variant)"
 													sx={{
 														width: "100%",
 													}}
-													// onClick={handleDisableProduct}
+													onClick={(e) =>
+														handleDisableProduct(e, selectedProduct?.id)
+													}
 												>
 													{isLoading.forDisable ? (
 														<CircularProgress
