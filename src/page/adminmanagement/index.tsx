@@ -30,16 +30,33 @@ export const AdminManagement = () => {
 	const { setIsAddUserFormModalOpen, isAlertModalOpen, setIsAlertModalOpen } =
 		useContext(AppContext);
 
-	const [paginationIndex, setPaginationIndex] = useState(1);
+	const [isFetching, setIsFetching] = useState(false);
+	const [paginationIndex, setPaginationIndex] = useState({
+		page: "1",
+		perPage: "5",
+		totalPages: "1",
+	});
 
 	const { data: admins, refetch: refetchAdmins } = useQuery({
-		queryKey: [`admin-and-distributor-accounts`, TOKEN],
+		queryKey: [`admin-and-distributor-accounts`, TOKEN, paginationIndex],
 		queryFn: async () => {
-			const response = await retrieveAllUserByTypeService(TOKEN, {
-				admin: true,
-				distributor: true,
-			});
-			return response;
+			setIsFetching(true);
+			const response = await retrieveAllUserByTypeService(
+				TOKEN,
+				{
+					admin: true,
+					distributor: true,
+				},
+				paginationIndex,
+			);
+			if (!Array.isArray(response) && response?.meta) {
+				setPaginationIndex((prev) => ({
+					...prev,
+					totalPages: String(response?.meta?.totalPages ?? "1"),
+				}));
+			}
+			setIsFetching(false);
+			return response?.data;
 		},
 		enabled: !!TOKEN,
 	});
@@ -52,33 +69,32 @@ export const AdminManagement = () => {
 
 	const handleNavigateToDetails = (
 		e: React.MouseEvent<HTMLTableRowElement, MouseEvent>,
-		id: string | Record<any, any>
+		id: string | Record<any, any>,
 	) => {
 		e.preventDefault();
 		return navigate(`/admin-management/${id}`);
 	};
 
 	const handlePagination = (
-		e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-		type: "previous" | "next"
+		e: React.MouseEvent<HTMLButtonElement>,
+		type: "previous" | "next",
 	) => {
 		e.preventDefault();
-		switch (type) {
-			case "previous":
-				if (paginationIndex <= 1) return;
-				setPaginationIndex((prev) => prev - 1);
-				break;
-			case "next":
-				if (paginationIndex >= 10) return;
-				setPaginationIndex((prev) => prev + 1);
-				break;
-			default:
-				break;
-		}
+		setPaginationIndex((prev) => {
+			const currentPage = parseInt(prev.page, 10);
+			const newPage =
+				type === "previous"
+					? Math.max(1, currentPage - 1)
+					: Math.min(parseInt(prev.totalPages, 10), currentPage + 1);
+			return {
+				...prev,
+				page: newPage.toString(),
+			};
+		});
 	};
 
 	const handleOpenAddUserFormModal = (
-		e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+		e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
 	) => {
 		e.preventDefault();
 		return setIsAddUserFormModalOpen(true);
@@ -89,7 +105,7 @@ export const AdminManagement = () => {
 	};
 
 	const handleAlertModalCallToActionClick = async (
-		e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+		e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
 	) => {
 		e.preventDefault();
 		return setIsAlertModalOpen(false);
@@ -190,6 +206,9 @@ export const AdminManagement = () => {
 										colour={"var(--dark-color)"}
 										padding="0 calc(var(--basic-padding)/2)"
 										onClick={(e) => handlePagination(e, "previous")}
+										disabled={
+											parseInt(paginationIndex.page, 10) === 1 || isFetching
+										}
 									>
 										<Typography
 											variant={"button"}
@@ -218,7 +237,7 @@ export const AdminManagement = () => {
 										lineHeight={"normal"}
 										color="var(--light-color)"
 									>
-										{paginationIndex}
+										{`${paginationIndex.page} / ${paginationIndex.totalPages}`}
 									</Typography>
 								</Box>
 								<Box overflow={"hidden"} display={"flex"}>
@@ -230,6 +249,10 @@ export const AdminManagement = () => {
 										colour={"var(--dark-color)"}
 										padding="0 calc(var(--basic-padding)/2)"
 										onClick={(e) => handlePagination(e, "next")}
+										disabled={
+											paginationIndex.page === paginationIndex.totalPages ||
+											isFetching
+										}
 									>
 										<Typography
 											variant={"button"}

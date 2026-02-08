@@ -4,11 +4,22 @@ type FilterKeys = "admin" | "distributor";
 
 export const retrieveAllUserByTypeService = async (
 	token: string,
-	filters: { [key in FilterKeys]: boolean }
+	filters: { [key in FilterKeys]: boolean },
+	pagination?: {
+		page: string;
+		perPage: string;
+	},
 ) => {
-	const queryParams = new URLSearchParams(
-		Object.fromEntries(Object.entries(filters).map(([k, v]) => [k, String(v)]))
-	).toString();
+	const queryParams = new URLSearchParams();
+	Object.entries(filters).forEach(([key, value]) => {
+		queryParams.append(key, String(value));
+	});
+	if (pagination?.page) {
+		queryParams.append("page", pagination.page);
+	}
+	if (pagination?.perPage) {
+		queryParams.append("perPage", pagination.perPage);
+	}
 	try {
 		const response = await fetch(
 			`${BASE_ENDPOINT}/api/v1/admin-interface/user-management/all/user?${queryParams}`,
@@ -19,14 +30,14 @@ export const retrieveAllUserByTypeService = async (
 					Authorization: `Bearer ${token}`,
 					"Content-Type": "application/json",
 				},
-			}
+			},
 		);
 		const res = await response.json();
 		if (!response.ok) {
 			console.error("Error:", res);
 			throw new Error(res.message);
 		}
-		return res.data;
+		return res;
 	} catch (error) {
 		console.error("API fetch error:", error);
 		throw error;
