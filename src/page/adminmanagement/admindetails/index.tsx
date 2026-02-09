@@ -66,9 +66,9 @@ export const AdminDetails = () => {
 		{ module: "Orders", status: "inactive" },
 		{ module: "Inventory", status: "inactive" },
 		{ module: "Transactions", status: "inactive" },
-		{ module: "Support", status: "inactive" },
+		// { module: "Support", status: "inactive" },
 		{ module: "Admin Management", status: "inactive" },
-		{ module: "Settings", status: "inactive" },
+		// { module: "Settings", status: "inactive" },
 	]);
 
 	useEffect(() => {
@@ -98,10 +98,10 @@ export const AdminDetails = () => {
 						{ module: "Orders", status: "inactive" },
 						{ module: "Inventory", status: "inactive" },
 						{ module: "Transactions", status: "inactive" },
-						{ module: "Support", status: "inactive" },
+						// { module: "Support", status: "inactive" },
 						{ module: "Admin Management", status: "inactive" },
-						{ module: "Settings", status: "inactive" },
-					]
+						// { module: "Settings", status: "inactive" },
+					],
 				);
 			})
 			.catch((err) => {
@@ -110,14 +110,14 @@ export const AdminDetails = () => {
 	}, [TOKEN, id, tabIndex]);
 
 	const handleNavigateBackwards = (
-		e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+		e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
 	) => {
 		e.preventDefault();
 		return navigate(-1);
 	};
 
 	const handleOpenEditUserModal = (
-		e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+		e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
 	) => {
 		e.preventDefault();
 		if (!selectedAdmin) return; //loader goes here
@@ -129,21 +129,21 @@ export const AdminDetails = () => {
 	};
 
 	const handleAlertModalCallToActionClick = async (
-		e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+		e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
 	) => {
 		e.preventDefault();
 		return setIsAlertModalOpen(false);
 	};
 
 	const handleToggleTabs = async (
-		e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+		e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
 	) => {
 		e.preventDefault();
 		setTabIndex((prev) => (prev === 0 ? 1 : 0));
 	};
 
 	const handleActivateAdmin = async (
-		e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+		e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
 	) => {
 		e.preventDefault();
 		if (isLoading.forDelete || !id.trim()) return;
@@ -156,7 +156,7 @@ export const AdminDetails = () => {
 			} else {
 				setIsLoading((prev) => ({ ...prev, forActivate: false }));
 				setError(
-					"Action: Activate admin failed. Please contact administrator."
+					"Action: Activate admin failed. Please contact administrator.",
 				);
 				setIsAlertModalOpen(true);
 			}
@@ -170,7 +170,7 @@ export const AdminDetails = () => {
 
 	const handleToggleOnAllPermissions = (
 		e: React.ChangeEvent<HTMLInputElement>,
-		checked: boolean
+		checked: boolean,
 	) => {
 		e.stopPropagation();
 		const updatedPermissions = permissions.map((perm) => ({
@@ -181,7 +181,7 @@ export const AdminDetails = () => {
 	};
 
 	const handleDeleteAdmin = async (
-		e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+		e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
 	) => {
 		e.preventDefault();
 		if (isLoading.forActivate || !id.trim()) return;
@@ -205,7 +205,7 @@ export const AdminDetails = () => {
 	};
 
 	const handleUpdatePermissions = async (
-		e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+		e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
 	) => {
 		e.preventDefault();
 		if (isLoading.forPermissionUpdate || !id.trim()) return;
@@ -355,7 +355,7 @@ export const AdminDetails = () => {
 																	? selectedAdmin.status
 																			.charAt(0)
 																			.toUpperCase() +
-																	  selectedAdmin.status.slice(1)
+																		selectedAdmin.status.slice(1)
 																	: "Untitled"
 															}
 															sx={{
@@ -686,7 +686,7 @@ export const AdminDetails = () => {
 													<Box>
 														<Checkbox
 															checked={permissions.every(
-																(permission) => permission.status === "active"
+																(permission) => permission.status === "active",
 															)}
 															sx={{
 																padding: 0,
