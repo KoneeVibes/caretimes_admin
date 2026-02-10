@@ -14,27 +14,30 @@ import { RouteProtector } from "./config/routeProtector";
 import { AdminManagement } from "./page/adminmanagement";
 import { AdminDetails } from "./page/adminmanagement/admindetails";
 import { InventoryDetails } from "./page/inventory/inventorydetails";
+import ScrollToTop from "./ScrollToTop";
 
 function App() {
 	return (
 		<BrowserRouter>
-			<Routes>
-				<Route path={"/"} element={<SignIn />} />
-				<Route path={"/forgot-password"} element={<ForgotPassword />} />
-				<Route path={"/auth-verification/:id"} element={<Verification />} />
-				<Route path={"/reset-password/:id"} element={<ResetPassword />} />
-				<Route element={<RouteProtector />}>
-					<Route path={"/dashboard"} element={<Dashboard />} />
-					<Route path={"/order"} element={<Order />} />
-					<Route path={"/inventory"} element={<Inventory />} />
-					<Route path={"/inventory/:id"} element={<InventoryDetails />} />
-					<Route path={"/transaction"} element={<Transaction />} />
-					{/* <Route path={"/support"} element={<Support />} />
+			<ScrollToTop>
+				<Routes>
+					<Route path={"/"} element={<SignIn />} />
+					<Route path={"/forgot-password"} element={<ForgotPassword />} />
+					<Route path={"/auth-verification/:id"} element={<Verification />} />
+					<Route path={"/reset-password/:id"} element={<ResetPassword />} />
+					<Route element={<RouteProtector />}>
+						<Route path={"/dashboard"} element={<Dashboard />} />
+						<Route path={"/order"} element={<Order />} />
+						<Route path={"/inventory"} element={<Inventory />} />
+						<Route path={"/inventory/:id"} element={<InventoryDetails />} />
+						<Route path={"/transaction"} element={<Transaction />} />
+						{/* <Route path={"/support"} element={<Support />} />
 					<Route path={"/setting"} element={<Setting />} /> */}
-					<Route path={"/admin-management"} element={<AdminManagement />} />
-					<Route path={"/admin-management/:id"} element={<AdminDetails />} />
-				</Route>
-			</Routes>
+						<Route path={"/admin-management"} element={<AdminManagement />} />
+						<Route path={"/admin-management/:id"} element={<AdminDetails />} />
+					</Route>
+				</Routes>
+			</ScrollToTop>
 		</BrowserRouter>
 	);
 }
