@@ -289,11 +289,26 @@ export const Inventory = () => {
 				queryClient.invalidateQueries({ queryKey: ["all-category", TOKEN] });
 				return setIsActivating(false);
 			}
-			const updatedCategory = {
+			const updatedCategory: Record<string, any> = {
 				...category,
 				status: category.status === "active" ? "inactive" : "active",
 			};
-			await editCategoryService(TOKEN, category.id, updatedCategory);
+			const formData = new FormData();
+			const data = {
+				name: updatedCategory.name,
+				status: updatedCategory.status,
+				description: updatedCategory.description,
+				thumbnail: updatedCategory.thumbnail,
+			};
+			Object.entries(data).forEach(([key, value]) => {
+				if (value === null || value === undefined) return;
+				if (value instanceof File) {
+					formData.append(key, value);
+				} else {
+					formData.append(key, String(value));
+				}
+			});
+			await editCategoryService(TOKEN, category.id, formData);
 			queryClient.invalidateQueries({ queryKey: ["all-category", TOKEN] });
 		} catch (error) {
 			setIsActivating(false);
