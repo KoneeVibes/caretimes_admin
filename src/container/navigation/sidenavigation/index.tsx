@@ -54,7 +54,7 @@ export const SideNavigation: React.FC<SideNavigationPropsType> = ({
 		queryFn: async () => {
 			const response = await retrievePermissionsService(
 				TOKEN,
-				authenticatedUser?.id
+				authenticatedUser?.id,
 			);
 			return response;
 		},
@@ -67,8 +67,8 @@ export const SideNavigation: React.FC<SideNavigationPropsType> = ({
 			(item.name === "Logout" ||
 				permissions?.some(
 					(permission: Record<string, any>) =>
-						permission.module === item.name && permission.status !== "inactive"
-				))
+						permission.module === item.name && permission.status !== "inactive",
+				)),
 	);
 
 	const handleDrawerClose = () => {
@@ -81,7 +81,7 @@ export const SideNavigation: React.FC<SideNavigationPropsType> = ({
 	};
 
 	const handleLogOutUser = async (
-		e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+		e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
 	) => {
 		e.preventDefault();
 		try {
@@ -99,7 +99,7 @@ export const SideNavigation: React.FC<SideNavigationPropsType> = ({
 
 	const handleNavItemClick = async (
 		e: React.MouseEvent<HTMLDivElement, MouseEvent>,
-		destination: string
+		destination: string,
 	) => {
 		e.stopPropagation();
 		if (destination === "/") {
@@ -114,7 +114,7 @@ export const SideNavigation: React.FC<SideNavigationPropsType> = ({
 	};
 
 	const handleAlertModalCallToActionClick = async (
-		e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+		e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
 	) => {
 		e.preventDefault();
 		await handleLogOutUser(e);
@@ -128,7 +128,7 @@ export const SideNavigation: React.FC<SideNavigationPropsType> = ({
 				key={index}
 				className={`${sideNavItem.name.replace(
 					/\s+/g,
-					"-"
+					"-",
 				)}-Side-Nav-Item Side-Nav-Item`}
 				component={"div"}
 				sx={{
@@ -227,7 +227,6 @@ export const SideNavigation: React.FC<SideNavigationPropsType> = ({
 								fontSize={14}
 								lineHeight={"normal"}
 								color={"var(--input-field-text-color)"}
-								maxWidth={"64px"}
 								marginBlockEnd={"calc(var(--basic-margin)/4)"}
 							>
 								{username}
@@ -240,7 +239,6 @@ export const SideNavigation: React.FC<SideNavigationPropsType> = ({
 								fontWeight={400}
 								fontSize={12}
 								lineHeight={"normal"}
-								maxWidth={"64px"}
 								color={"var(--input-field-text-color)"}
 							>
 								{role}

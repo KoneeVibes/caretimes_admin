@@ -127,25 +127,21 @@ export const Inventory = () => {
 		{
 			name: "Total Product Items",
 			amount: productOverview?.totalProduct ?? 0,
-			traction: 0,
 			icon: <InventoryTotalProductItemsIcon />,
 		},
 		{
 			name: "Approved Products",
 			amount: productOverview?.activeProduct ?? 0,
-			traction: -2.5,
 			icon: <InventoryApprovedProductsIcon />,
 		},
 		{
 			name: "Pending Products",
 			amount: productOverview?.pendingProduct ?? 0,
-			traction: +2.5,
 			icon: <InventoryPendingProductsIcon />,
 		},
 		{
 			name: "Disabled Products",
 			amount: productOverview?.disabledProduct ?? 0,
-			traction: 0,
 			icon: <InventoryRejectedProductsIcon />,
 		},
 	];
@@ -759,6 +755,7 @@ export const Inventory = () => {
 								<Grid size={{ mobile: 12, xl: 6 }}>
 									<Stack
 										direction={"row"}
+										flexWrap={"wrap"}
 										overflow={"hidden"}
 										gap={"calc(var(--flex-gap)/2)"}
 									>

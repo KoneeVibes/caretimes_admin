@@ -15,6 +15,7 @@ import { AdminManagement } from "./page/adminmanagement";
 import { AdminDetails } from "./page/adminmanagement/admindetails";
 import { InventoryDetails } from "./page/inventory/inventorydetails";
 import ScrollToTop from "./ScrollToTop";
+import { OrderDetails } from "./page/order/orderdetails";
 
 function App() {
 	return (
@@ -28,11 +29,12 @@ function App() {
 					<Route element={<RouteProtector />}>
 						<Route path={"/dashboard"} element={<Dashboard />} />
 						<Route path={"/order"} element={<Order />} />
+						<Route path={"/order/:id"} element={<OrderDetails />} />
 						<Route path={"/inventory"} element={<Inventory />} />
 						<Route path={"/inventory/:id"} element={<InventoryDetails />} />
 						<Route path={"/transaction"} element={<Transaction />} />
 						{/* <Route path={"/support"} element={<Support />} />
-					<Route path={"/setting"} element={<Setting />} /> */}
+					        <Route path={"/setting"} element={<Setting />} /> */}
 						<Route path={"/admin-management"} element={<AdminManagement />} />
 						<Route path={"/admin-management/:id"} element={<AdminDetails />} />
 					</Route>

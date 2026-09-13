@@ -3,68 +3,171 @@ import {
 	Card,
 	CardContent,
 	Grid,
-	InputAdornment,
+	// InputAdornment,
 	Stack,
 	Typography,
 	useMediaQuery,
 } from "@mui/material";
 import { AppLayout } from "../../container/layout/app";
 import { DashboardWrapper } from "./styled";
-import { dashboardCards, summary } from "../../config/static";
 import {
-	DashboardCardDownwardTickIcon,
-	DashboardCardUpwardTickIcon,
+	// DashboardCardUpwardTickIcon,
 	DownloadIcon,
 	ForwardArrowIcon,
-	SearchIcon,
+	DashboardActiveOrderIcon,
+	DashboardCompletedOrderIcon,
+	DashboardCustomerIcon,
+	DashboardIssueIcon,
+	DashboardTransactionIcon,
+	DashboardUnsettledFundIcon,
+	// SearchIcon,
 } from "../../asset";
 import { useContext, useState } from "react";
 import { AppContext } from "../../context";
 import { BaseButton } from "../../component/button/styled";
 import { OrderTable } from "../../container/table/ordertable";
-import { BaseInput } from "../../component/form/input/styled";
+// import { BaseInput } from "../../component/form/input/styled";
 import { BaseLineGraph } from "../../component/chart/graph";
 import { BaseFieldSet } from "../../component/form/fieldset/styled";
 import { BaseSelect } from "../../component/form/select/styled";
 import { BaseOption } from "../../component/form/option/styled";
+import { useQuery } from "@tanstack/react-query";
+import Cookies from "universal-cookie";
+import { retrieveAllOrderService } from "../../util/order/retrieveAllOrder";
+import { useNavigate } from "react-router-dom";
+import { retrieveSystemOverviewService } from "../../util/dashboard/retrieveSystemOverview";
 
 export const Dashboard = () => {
+	const cookies = new Cookies();
+	const TOKEN = cookies.getAll().TOKEN;
+
+	const navigate = useNavigate();
 	const { authenticatedUser } = useContext(AppContext);
 	const matchesLaptopAndAbove = useMediaQuery("(min-width:1024px)");
 
-	const orders = [] as Record<string, any>[];
-	const filters = ["Last 7 days", "Last 1 Month", "Last Quarter", "Last Half"];
+	const filters = [
+		{ label: "Last 7 days", period: "day", value: 7 },
+		{ label: "Last 1 Month", period: "month", value: 1 },
+		{ label: "Last Quarter", period: "month", value: 3 },
+		{ label: "Last Half", period: "month", value: 6 },
+	];
 
 	const [filter, setFilter] = useState(filters[0]);
-	const [paginationIndex, setPaginationIndex] = useState(1);
+	const [paginationIndex, setPaginationIndex] = useState({
+		page: "1",
+		perPage: "5",
+		totalPages: "1",
+	});
 	const [activePopularCategory, setActivePopularCategory] = useState<
 		"distributor" | "product"
-	>("distributor");
+	>("product");
+
+	const { data: overview } = useQuery({
+		queryKey: [`overview`, TOKEN, filter.period, filter.value],
+		queryFn: async () => {
+			const response = await retrieveSystemOverviewService(TOKEN, {
+				period: filter.period,
+				value: String(filter.value),
+			});
+			return response;
+		},
+		enabled: !!TOKEN,
+	});
+
+	const { data: orders } = useQuery({
+		queryKey: [`all-order`, TOKEN, paginationIndex],
+		queryFn: async () => {
+			const response = await retrieveAllOrderService(
+				TOKEN,
+				[],
+				paginationIndex,
+			);
+			if (!Array.isArray(response) && response?.meta) {
+				setPaginationIndex((prev) => ({
+					...prev,
+					totalPages: String(response?.meta?.totalPages ?? "1"),
+				}));
+			}
+			return response?.data;
+		},
+		enabled: !!TOKEN,
+	});
+
+	const dashboardCards = [
+		{
+			name: "Customers",
+			amount: overview?.customers ?? 0,
+			icon: <DashboardCustomerIcon />,
+		},
+		{
+			name: "Distributors",
+			amount: overview?.distributors ?? 0,
+			icon: <DashboardUnsettledFundIcon />,
+		},
+		{
+			name: "Sales Volume",
+			amount: `₦${
+				overview?.sales?.volumeByCurrency?.find(
+					(item: { currency: string; amount: string }) =>
+						item.currency === "NGN",
+				).amount ?? 0
+			}`,
+			icon: <DashboardTransactionIcon />,
+		},
+		{
+			name: "Available Units of Unique Products",
+			amount: `${overview?.stock?.availableUnits ?? 0} of ${overview?.stock?.activeProducts ?? 0}`,
+			icon: <DashboardIssueIcon />,
+		},
+		{
+			name: "Fulfilled Orders",
+			amount: overview?.fulfilledOrders ?? 0,
+			icon: <DashboardCompletedOrderIcon />,
+		},
+		{
+			name: "Paid Orders",
+			amount: overview?.paidOrders ?? 0,
+			icon: <DashboardActiveOrderIcon />,
+		},
+	];
 
 	const handleNavigateToOrderDetail = (
 		e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-		id: string | Record<any, any>
+		id: string | Record<any, any>,
 	) => {
 		e.preventDefault();
+		return navigate(`/order/${id}`);
+	};
+
+	const handleNavigateFromPopularityTable = (
+		e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+		id: string,
+	) => {
+		e.preventDefault();
+		switch (id) {
+			case "product":
+				return navigate("/inventory");
+			case "distributor":
+				return navigate("/admin-management");
+		}
 	};
 
 	const handlePagination = (
-		e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-		type: "previous" | "next"
+		e: React.MouseEvent<HTMLButtonElement>,
+		type: "previous" | "next",
 	) => {
 		e.preventDefault();
-		switch (type) {
-			case "previous":
-				if (paginationIndex <= 1) return;
-				setPaginationIndex((prev) => prev - 1);
-				break;
-			case "next":
-				if (paginationIndex >= 10) return;
-				setPaginationIndex((prev) => prev + 1);
-				break;
-			default:
-				break;
-		}
+		setPaginationIndex((prev) => {
+			const currentPage = parseInt(prev.page, 10);
+			const newPage =
+				type === "previous"
+					? Math.max(1, currentPage - 1)
+					: Math.min(parseInt(prev.totalPages, 10), currentPage + 1);
+			return {
+				...prev,
+				page: newPage.toString(),
+			};
+		});
 	};
 
 	const handleChange = (
@@ -76,10 +179,15 @@ export const Dashboard = () => {
 						value: unknown;
 						name: string;
 					};
-			  })
+			  }),
 	) => {
 		const { value } = e.target;
-		setFilter(value as string);
+		const selectedFilter = filters.find(
+			(filter) => String(filter.label) === String(value),
+		);
+		if (selectedFilter) {
+			setFilter(selectedFilter);
+		}
 	};
 
 	return (
@@ -120,7 +228,7 @@ export const Dashboard = () => {
 									<CardContent className="card-content">
 										<Stack
 											height={"100%"}
-											direction={"row"}
+											direction={{ desktop: "row" }}
 											padding={"var(--basic-padding)"}
 											gap={"calc(var(--flex-gap) / 2)"}
 										>
@@ -153,25 +261,26 @@ export const Dashboard = () => {
 														fontWeight={400}
 														fontSize={16}
 														lineHeight={"normal"}
+														whiteSpace={"normal"}
 														color="var(--input-field-text-color)"
 													>
 														{card.name}
 													</Typography>
 												</Box>
-												<Stack
+												{/* <Stack
 													direction={"row"}
 													overflow={"hidden"}
 													alignItems={"center"}
 													gap={"calc(var(--flex-gap)/4)"}
-												>
-													<Box overflow={"hidden"} display={"flex"}>
+												> */}
+												{/* <Box overflow={"hidden"} display={"flex"}>
 														{Number(card.traction) > 0 ? (
 															<DashboardCardUpwardTickIcon />
 														) : Number(card.traction) < 0 ? (
 															<DashboardCardDownwardTickIcon />
 														) : null}
-													</Box>
-													<Box>
+													</Box> */}
+												{/* <Box>
 														<Typography
 															variant="subtitle2"
 															fontFamily={"Roboto"}
@@ -204,8 +313,8 @@ export const Dashboard = () => {
 																</Typography>
 															) : null}
 														</Typography>
-													</Box>
-												</Stack>
+													</Box> */}
+												{/* </Stack> */}
 											</Stack>
 										</Stack>
 									</CardContent>
@@ -251,15 +360,24 @@ export const Dashboard = () => {
 													<BaseFieldSet>
 														<BaseSelect
 															border="none"
-															value={filter}
+															value={filter.label}
 															onChange={handleChange}
 															padding="calc(var(--basic-padding)/2) 0"
 														>
-															{filters?.map((filter: string, index: number) => (
-																<BaseOption key={index} value={filter}>
-																	{filter}
-																</BaseOption>
-															))}
+															{filters?.map(
+																(
+																	filter: {
+																		label: string;
+																		period: string;
+																		value: number;
+																	},
+																	index: number,
+																) => (
+																	<BaseOption key={index} value={filter.label}>
+																		{filter?.label}
+																	</BaseOption>
+																),
+															)}
 														</BaseSelect>
 													</BaseFieldSet>
 												</Box>
@@ -274,7 +392,7 @@ export const Dashboard = () => {
 														lineHeight={"normal"}
 														color="var(--input-field-text-color)"
 													>
-														₦350K
+														{/* ₦350K */}
 													</Typography>
 												</Box>
 												<Stack
@@ -289,7 +407,7 @@ export const Dashboard = () => {
 														alignItems={"center"}
 														gap={"calc(var(--flex-gap)/4)"}
 													>
-														<Box overflow={"hidden"} display={"flex"}>
+														{/* <Box overflow={"hidden"} display={"flex"}>
 															<DashboardCardUpwardTickIcon />
 														</Box>
 														<Box>
@@ -303,7 +421,7 @@ export const Dashboard = () => {
 															>
 																8.6K
 															</Typography>
-														</Box>
+														</Box> */}
 													</Stack>
 													<Box overflow={"hidden"}>
 														<Typography
@@ -314,7 +432,7 @@ export const Dashboard = () => {
 															lineHeight={"normal"}
 															color="var(--grey-subtitle-color)"
 														>
-															vs {filter.toLowerCase()}
+															In the {filter?.label?.toLowerCase()}
 														</Typography>
 													</Box>
 												</Stack>
@@ -324,19 +442,11 @@ export const Dashboard = () => {
 											<BaseLineGraph
 												width="100%"
 												height="350px"
-												labels={[
-													"MON",
-													"TUE",
-													"WED",
-													"THU",
-													"FRI",
-													"SAT",
-													"SUN",
-												]}
+												labels={overview?.graph?.sales?.labels ?? []}
 												datasets={[
 													{
 														label: "Sales",
-														data: [4, 7, 4, 6, 9, 8, 5, 2, 0, 4, 7, 1],
+														data: overview?.graph?.sales?.data ?? [],
 														backgroundColor: "#8d5245",
 														borderColor: "#8d5245",
 														fill: true,
@@ -356,7 +466,7 @@ export const Dashboard = () => {
 									border="none"
 									variant="text"
 									disableElevation
-									endIcon={<DownloadIcon />}
+									// endIcon={<DownloadIcon />}
 									colour={"var(--primary-color)"}
 									padding="calc(var(--basic-padding)/2) 0"
 									sx={{
@@ -379,7 +489,7 @@ export const Dashboard = () => {
 										color={"inherit"}
 										textTransform={"inherit"}
 									>
-										Download Report
+										Sales Report
 									</Typography>
 								</BaseButton>
 							</Box>
@@ -397,7 +507,7 @@ export const Dashboard = () => {
 									<Stack
 										height={"100%"}
 										gap={"var(--flex-gap)"}
-										justifyContent={"space-around"}
+										justifyContent={"space-between"}
 										padding={"var(--basic-padding)"}
 									>
 										<Box overflow={"hidden"}>
@@ -423,61 +533,67 @@ export const Dashboard = () => {
 												lineHeight={"normal"}
 												color="var(--grey-subtitle-color)"
 											>
-												Total {summary.total}{" "}
-												{activePopularCategory.charAt(0).toUpperCase() +
-													activePopularCategory.slice(1)}
-												s
+												Found across{" "}
+												{overview?.trending?.[activePopularCategory]?.reduce(
+													(total: number, category: Record<string, any>) =>
+														total + category.cartLines,
+													0,
+												)}{" "}
+												carts
 											</Typography>
 										</Box>
-										{summary[activePopularCategory]?.map((category, index) => {
-											return (
-												<Stack
-													key={index}
-													direction={"row"}
-													alignItems={"center"}
-													gap={"var(--flex-gap)"}
-													justifyContent={"space-between"}
-												>
-													<Box overflow={"hidden"}>
-														<Typography
-															variant="h3"
-															fontFamily={"Roboto"}
-															fontWeight={500}
-															fontSize={16}
-															lineHeight={"normal"}
-															color="var(--input-field-text-color)"
-															marginBlockEnd={"calc(var(--basic-margin)/4)"}
-														>
-															{category.name}
-														</Typography>
-														{activePopularCategory === "distributor" && (
+										{overview?.trending?.[activePopularCategory]?.map(
+											(category: Record<string, any>, index: number) => {
+												return (
+													<Stack
+														key={index}
+														direction={"row"}
+														alignItems={"center"}
+														gap={"var(--flex-gap)"}
+														justifyContent={"space-between"}
+													>
+														<Box overflow={"hidden"} flex={1}>
 															<Typography
-																variant="body1"
+																variant="h3"
 																fontFamily={"Roboto"}
-																fontWeight={400}
-																fontSize={12}
+																fontWeight={500}
+																fontSize={16}
 																lineHeight={"normal"}
-																color="var(--grey-subtitle-color)"
+																whiteSpace={"normal"}
+																color="var(--input-field-text-color)"
 															>
-																{/* {category.address} */}
+																{category.name}
 															</Typography>
-														)}
-													</Box>
-													<Box overflow={"hidden"}>
-														<Typography
-															variant="subtitle1"
-															fontFamily={"Roboto"}
-															fontWeight={500}
-															fontSize={16}
-															lineHeight={"normal"}
-															color="var(--input-field-text-color)"
-														>
-															{category.sales} sales
-														</Typography>
-													</Box>
-												</Stack>
-											);
-										})}
+															{activePopularCategory === "distributor" && (
+																<Typography
+																	variant="body1"
+																	fontFamily={"Roboto"}
+																	fontWeight={400}
+																	fontSize={12}
+																	lineHeight={"normal"}
+																	color="var(--grey-subtitle-color)"
+																>
+																	{/* {category.address} */}
+																</Typography>
+															)}
+														</Box>
+														<Box overflow={"hidden"}>
+															<Typography
+																variant="subtitle1"
+																fontFamily={"Roboto"}
+																fontWeight={500}
+																fontSize={16}
+																lineHeight={"normal"}
+																whiteSpace={"normal"}
+																color="var(--input-field-text-color)"
+															>
+																{category.unitsAdded} units
+															</Typography>
+														</Box>
+													</Stack>
+												);
+											},
+										)}
 										<Box overflow={"hidden"}>
 											<BaseButton
 												border="none"
@@ -487,6 +603,12 @@ export const Dashboard = () => {
 												sx={{
 													width: "100%",
 												}}
+												onClick={(e) =>
+													handleNavigateFromPopularityTable(
+														e,
+														activePopularCategory,
+													)
+												}
 											>
 												<Typography
 													variant={"button"}
@@ -624,8 +746,9 @@ export const Dashboard = () => {
 									mobile: "calc(var(--flex-gap)/4)",
 									laptop: "var(--flex-gap)",
 								}}
+								alignItems={"center"}
 							>
-								<Grid size={{ mobile: 12, laptop: 8 }}>
+								<Grid size={{ mobile: 6 }}>
 									<Box overflow={"hidden"}>
 										<Typography
 											variant="h2"
@@ -639,14 +762,15 @@ export const Dashboard = () => {
 										</Typography>
 									</Box>
 								</Grid>
-								<Grid size={{ mobile: 12, laptop: 4 }}>
+								<Grid size={{ mobile: 6 }}>
 									<Stack
 										direction={"row"}
 										overflow={"hidden"}
 										alignItems={"center"}
+										justifyContent={"flex-end"} //we might take this out when we re-include the search bar
 										gap={"calc(var(--flex-gap)/2)"}
 									>
-										<Box overflow={"hidden"}>
+										{/* <Box overflow={"hidden"}>
 											<BaseInput
 												startAdornment={
 													<InputAdornment position="start">
@@ -658,7 +782,7 @@ export const Dashboard = () => {
 												borderradius={"8px"}
 												padding="calc(var(--basic-padding)/4) calc(var(--basic-padding)/2)"
 											/>
-										</Box>
+										</Box> */}
 										<Box overflow={"hidden"} display={"flex"}>
 											<BaseButton
 												radius="0"
@@ -673,6 +797,10 @@ export const Dashboard = () => {
 														marginRight: 0,
 														display: "flex",
 													},
+												}}
+												onClick={(e) => {
+													e.preventDefault();
+													navigate("/order");
 												}}
 											>
 												<Typography
@@ -757,7 +885,7 @@ export const Dashboard = () => {
 												lineHeight={"normal"}
 												color="var(--light-color)"
 											>
-												{paginationIndex}
+												{paginationIndex?.page}
 											</Typography>
 										</Box>
 										<Box overflow={"hidden"} display={"flex"}>

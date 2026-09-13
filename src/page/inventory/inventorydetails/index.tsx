@@ -13,6 +13,7 @@ import {
 	Typography,
 	useMediaQuery,
 } from "@mui/material";
+import { Masonry } from "@mui/lab";
 import { Fragment, useContext, useEffect, useState } from "react";
 import { retrieveProductByIdService } from "../../../util/product/retrieveProductById";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
@@ -249,11 +250,13 @@ export const InventoryDetails = () => {
 						</Typography>
 					</Box>
 				</Stack>
-				<Grid container component={"div"} spacing={"var(--flex-gap)"}>
-					<Grid
-						order={{ mobile: 2, laptop: 3 }}
-						size={{ mobile: 12, laptop: 6 }}
-					>
+				<Masonry
+					sequential
+					spacing={2}
+					sx={{ margin: 0 }}
+					columns={{ mobile: 1, laptop: 2 }}
+				>
+					<Grid size={{ mobile: 12, laptop: 6 }}>
 						<Card
 							sx={{
 								boxShadow: "none",
@@ -350,8 +353,8 @@ export const InventoryDetails = () => {
 						</Card>
 					</Grid>
 					<Grid
-						order={{ mobile: 1, laptop: 2 }}
 						size={{ mobile: 12, laptop: 6 }}
+						order={{ mobile: "0 !important", laptop: "2 !important" }}
 					>
 						<Card
 							sx={{
@@ -362,365 +365,50 @@ export const InventoryDetails = () => {
 							<CardContent className="card-content">
 								<Stack
 									height={"100%"}
-									gap={"calc(var(--flex-gap))"}
-									justifyContent={"space-between"}
+									gap={"calc(var(--flex-gap)/2)"}
+									direction={{ miniTablet: "row" }}
+									justifyContent={{ laptop: "flex-end" }}
 								>
-									<Stack
-										gap={"calc(var(--flex-gap)/2)"}
-										direction={{ miniTablet: "row" }}
-										justifyContent={{ laptop: "flex-end" }}
-									>
-										<Box overflow={"hidden"} flexShrink={matches ? 1 : 0}>
-											<IconButton
-												sx={{
-													borderRadius: "14px",
-													padding: "calc(var(--basic-padding)/2)",
+									<Box overflow={"hidden"} flexShrink={matches ? 1 : 0}>
+										<IconButton
+											sx={{
+												borderRadius: "14px",
+												padding: "calc(var(--basic-padding)/2)",
+												backgroundColor: "var(--bright-yellow-color)",
+												"&:hover": {
 													backgroundColor: "var(--bright-yellow-color)",
-													"&:hover": {
-														backgroundColor: "var(--bright-yellow-color)",
-													},
-												}}
-												onClick={handleOpenEditProductModal}
-											>
-												<EditIcon />
-											</IconButton>
-										</Box>
-										{authenticatedUser?.type === "super-admin" && (
-											<Box overflow={"hidden"}>
-												<BaseButton
-													variant="outlined"
-													disableElevation
-													disabled={
-														["active", "inactive", "disabled"].includes(
-															selectedProduct?.status,
-														) || isLoading.forApprove
-													}
-													colour="var(--success-color)"
-													border="1px solid var(--success-color)"
-													sx={{
-														width: "100%",
-													}}
-													onClick={(e) =>
-														handleApproveProduct(e, selectedProduct?.id)
-													}
-												>
-													{isLoading.forApprove ? (
-														<CircularProgress
-															color="inherit"
-															className="loader"
-														/>
-													) : (
-														<Typography
-															variant={"button"}
-															fontFamily={"inherit"}
-															fontWeight={"inherit"}
-															fontSize={"inherit"}
-															lineHeight={"inherit"}
-															color={"inherit"}
-															textTransform={"inherit"}
-														>
-															Approve Product
-														</Typography>
-													)}
-												</BaseButton>
-											</Box>
-										)}
-										{authenticatedUser?.type === "super-admin" && (
-											<Box overflow={"hidden"}>
-												<BaseButton
-													variant="contained"
-													disableElevation
-													disabled={
-														selectedProduct?.status === "disabled" ||
-														isLoading.forDisable
-													}
-													bgcolor="var(--error-color-variant)"
-													sx={{
-														width: "100%",
-													}}
-													onClick={(e) =>
-														handleDisableProduct(e, selectedProduct?.id)
-													}
-												>
-													{isLoading.forDisable ? (
-														<CircularProgress
-															color="inherit"
-															className="loader"
-														/>
-													) : (
-														<Typography
-															variant={"button"}
-															fontFamily={"inherit"}
-															fontWeight={"inherit"}
-															fontSize={"inherit"}
-															lineHeight={"inherit"}
-															color={"inherit"}
-															textTransform={"inherit"}
-														>
-															Disable Product
-														</Typography>
-													)}
-												</BaseButton>
-											</Box>
-										)}
-									</Stack>
-									<Card
-										sx={{
-											boxShadow: "none",
-											borderRadius: "12px",
-											border: "1px solid var(--input-field-border-color)",
-										}}
-									>
-										<CardContent className="card-content">
-											<Stack
-												height={"100%"}
-												gap={"calc(var(--flex-gap)/2)"}
-												padding={"calc(var(--basic-padding)/2)"}
-											>
-												<Box overflow={"hidden"}>
-													<Typography
-														variant="h2"
-														fontFamily={"Inter"}
-														fontWeight={700}
-														fontSize={18}
-														lineHeight={"normal"}
-														color="var(--input-field-text-color)"
-													>
-														Catalogue
-													</Typography>
-												</Box>
-												<Box>
-													<BaseFieldSet>
-														<BaseLabel>Product Category</BaseLabel>
-														<BaseSelect
-															disabled
-															name="category"
-															radius="10px"
-															fontsize="16px"
-															fontweight={400}
-															value={selectedProduct?.category || " "}
-															colour="var(--input-field-text-color)"
-															border="1px solid var(--input-field-border-color)"
-														>
-															<BaseOption
-																value=" "
-																fontsize="16px"
-																fontweight={400}
-															>
-																Select Product Category
-															</BaseOption>
-															{categories?.map(
-																(
-																	category: Record<string, any>,
-																	index: number,
-																) => (
-																	<BaseOption
-																		key={index}
-																		value={category?.id}
-																		fontsize="16px"
-																		fontweight={400}
-																	>
-																		{category?.name.charAt(0).toUpperCase() +
-																			category?.name.slice(1)}
-																	</BaseOption>
-																),
-															)}
-														</BaseSelect>
-													</BaseFieldSet>
-												</Box>
-											</Stack>
-										</CardContent>
-									</Card>
-								</Stack>
-							</CardContent>
-						</Card>
-					</Grid>
-					<Grid order={3} size={{ mobile: 12, laptop: 6 }}>
-						<Stack height={"100%"} gap={"calc(var(--flex-gap))"}>
-							<Card
-								sx={{
-									boxShadow: "none",
-									borderRadius: "12px",
-									border: "1px solid var(--input-field-border-color)",
-								}}
-							>
-								<CardContent className="card-content">
-									<Stack
-										height={"100%"}
-										gap={"calc(var(--flex-gap)/2)"}
-										padding={"calc(var(--basic-padding)/2)"}
-									>
-										<Box overflow={"hidden"}>
-											<Typography
-												variant="h2"
-												fontFamily={"Inter"}
-												fontWeight={700}
-												fontSize={18}
-												lineHeight={"normal"}
-												color="var(--input-field-text-color)"
-											>
-												Product description
-											</Typography>
-										</Box>
-										<Stack gap={"calc(var(--flex-gap)/2)"}>
-											<Box>
-												<BaseFieldSet>
-													<BaseLabel>Product Name</BaseLabel>
-													<BaseInput
-														disabled
-														required
-														name="name"
-														value={selectedProduct?.name || ""}
-														placeholder="Enter Product Name"
-													/>
-												</BaseFieldSet>
-											</Box>
-											<Box>
-												<BaseFieldSet>
-													<BaseLabel>Product Description</BaseLabel>
-													<BaseInput
-														disabled
-														required
-														name="name"
-														value={selectedProduct?.description || ""}
-														placeholder="Enter Product Name"
-													/>
-												</BaseFieldSet>
-											</Box>
-										</Stack>
-									</Stack>
-								</CardContent>
-							</Card>
-							<Card
-								sx={{
-									boxShadow: "none",
-									borderRadius: "12px",
-									border: "1px solid var(--input-field-border-color)",
-								}}
-							>
-								<CardContent className="card-content">
-									<Stack
-										height={"100%"}
-										gap={"calc(var(--flex-gap)/2)"}
-										padding={"calc(var(--basic-padding)/2)"}
-									>
-										<Box overflow={"hidden"}>
-											<Typography
-												variant="h2"
-												fontFamily={"Inter"}
-												fontWeight={700}
-												fontSize={18}
-												lineHeight={"normal"}
-												color="var(--input-field-text-color)"
-											>
-												Inventory
-											</Typography>
-										</Box>
-										<Stack gap={"calc(var(--flex-gap)/2)"}>
-											<Box>
-												<BaseFieldSet>
-													<BaseLabel>Quantity in Stock</BaseLabel>
-													<BaseInput
-														disabled
-														required
-														name="stock"
-														value={selectedProduct?.stock || ""}
-														placeholder="Enter Stock Quantity"
-													/>
-												</BaseFieldSet>
-											</Box>
-										</Stack>
-									</Stack>
-								</CardContent>
-							</Card>
-						</Stack>
-					</Grid>
-					<Grid
-						order={{ mobile: 4, laptop: 1 }}
-						size={{ mobile: 12, laptop: 6 }}
-					>
-						<Stack height={"100%"} gap={"calc(var(--flex-gap))"}>
-							<Card
-								sx={{
-									boxShadow: "none",
-									borderRadius: "12px",
-									border: "1px solid var(--input-field-border-color)",
-								}}
-							>
-								<CardContent className="card-content">
-									<Stack
-										height={"100%"}
-										gap={"calc(var(--flex-gap)/2)"}
-										padding={"calc(var(--basic-padding)/2)"}
-									>
-										<Box overflow={"hidden"}>
-											<Typography
-												variant="h2"
-												fontFamily={"Inter"}
-												fontWeight={700}
-												fontSize={18}
-												lineHeight={"normal"}
-												color="var(--input-field-text-color)"
-											>
-												Pricing
-											</Typography>
-										</Box>
-										<Box>
-											<BaseFieldSet>
-												<BaseInput
-													required
-													disabled
-													name="price"
-													value={selectedProduct?.price || ""}
-													placeholder="Enter Price"
-												/>
-											</BaseFieldSet>
-										</Box>
-									</Stack>
-								</CardContent>
-							</Card>
-							<Card
-								sx={{
-									boxShadow: "none",
-									borderRadius: "12px",
-									border: "1px solid var(--input-field-border-color)",
-								}}
-							>
-								<CardContent className="card-content">
-									<Stack
-										height={"100%"}
-										gap={"calc(var(--flex-gap)/2)"}
-										padding={"calc(var(--basic-padding)/2)"}
-									>
-										<Stack
-											direction={"row"}
-											alignItems={"center"}
-											gap={"calc(var(--flex-gap)/2)"}
-											justifyContent={"space-between"}
+												},
+											}}
+											onClick={handleOpenEditProductModal}
 										>
-											<Box overflow={"hidden"}>
-												<Typography
-													variant="h2"
-													fontFamily={"Inter"}
-													fontWeight={700}
-													fontSize={18}
-													lineHeight={"normal"}
-													color="var(--input-field-text-color)"
-												>
-													Distributor Details
-												</Typography>
-											</Box>
-											<Box overflow={"hidden"}>
-												<BaseButton
-													variant="outlined"
-													disableElevation
-													colour="var(--primary-color)"
-													border="1px solid var(--primary-color)"
-													sx={{
-														width: "100%",
-													}}
-													// onClick={handleApproveProduct}
-												>
+											<EditIcon />
+										</IconButton>
+									</Box>
+									{authenticatedUser?.type === "super-admin" && (
+										<Box overflow={"hidden"}>
+											<BaseButton
+												variant="outlined"
+												disableElevation
+												disabled={
+													["active", "inactive", "disabled"].includes(
+														selectedProduct?.status,
+													) || isLoading.forApprove
+												}
+												colour="var(--success-color)"
+												border="1px solid var(--success-color)"
+												sx={{
+													width: "100%",
+												}}
+												onClick={(e) =>
+													handleApproveProduct(e, selectedProduct?.id)
+												}
+											>
+												{isLoading.forApprove ? (
+													<CircularProgress
+														color="inherit"
+														className="loader"
+													/>
+												) : (
 													<Typography
 														variant={"button"}
 														fontFamily={"inherit"}
@@ -730,17 +418,318 @@ export const InventoryDetails = () => {
 														color={"inherit"}
 														textTransform={"inherit"}
 													>
-														Modify
+														Approve Product
 													</Typography>
-												</BaseButton>
-											</Box>
-										</Stack>
-									</Stack>
-								</CardContent>
-							</Card>
-						</Stack>
+												)}
+											</BaseButton>
+										</Box>
+									)}
+									{authenticatedUser?.type === "super-admin" && (
+										<Box overflow={"hidden"}>
+											<BaseButton
+												variant="contained"
+												disableElevation
+												disabled={
+													selectedProduct?.status === "disabled" ||
+													isLoading.forDisable
+												}
+												bgcolor="var(--error-color-variant)"
+												sx={{
+													width: "100%",
+												}}
+												onClick={(e) =>
+													handleDisableProduct(e, selectedProduct?.id)
+												}
+											>
+												{isLoading.forDisable ? (
+													<CircularProgress
+														color="inherit"
+														className="loader"
+													/>
+												) : (
+													<Typography
+														variant={"button"}
+														fontFamily={"inherit"}
+														fontWeight={"inherit"}
+														fontSize={"inherit"}
+														lineHeight={"inherit"}
+														color={"inherit"}
+														textTransform={"inherit"}
+													>
+														Disable Product
+													</Typography>
+												)}
+											</BaseButton>
+										</Box>
+									)}
+								</Stack>
+							</CardContent>
+						</Card>
 					</Grid>
-				</Grid>
+					<Grid size={{ mobile: 12, laptop: 6 }}>
+						<Card
+							sx={{
+								boxShadow: "none",
+								borderRadius: "12px",
+								border: "1px solid var(--input-field-border-color)",
+							}}
+						>
+							<CardContent className="card-content">
+								<Stack
+									height={"100%"}
+									gap={"calc(var(--flex-gap)/2)"}
+									padding={"calc(var(--basic-padding)/2)"}
+								>
+									<Box overflow={"hidden"}>
+										<Typography
+											variant="h2"
+											fontFamily={"Inter"}
+											fontWeight={700}
+											fontSize={18}
+											lineHeight={"normal"}
+											color="var(--input-field-text-color)"
+										>
+											Product description
+										</Typography>
+									</Box>
+									<Stack gap={"calc(var(--flex-gap)/2)"}>
+										<Box>
+											<BaseFieldSet>
+												<BaseLabel>Product Name</BaseLabel>
+												<BaseInput
+													disabled
+													required
+													name="name"
+													value={selectedProduct?.name || ""}
+													placeholder="Enter Product Name"
+												/>
+											</BaseFieldSet>
+										</Box>
+										<Box>
+											<BaseFieldSet>
+												<BaseLabel>Product Description</BaseLabel>
+												<BaseInput
+													disabled
+													required
+													name="name"
+													value={selectedProduct?.description || ""}
+													placeholder="Enter Product Name"
+												/>
+											</BaseFieldSet>
+										</Box>
+									</Stack>
+								</Stack>
+							</CardContent>
+						</Card>
+					</Grid>
+					<Grid size={{ mobile: 12, laptop: 6 }}>
+						<Card
+							sx={{
+								boxShadow: "none",
+								borderRadius: "12px",
+								border: "1px solid var(--input-field-border-color)",
+							}}
+						>
+							<CardContent className="card-content">
+								<Stack
+									height={"100%"}
+									gap={"calc(var(--flex-gap)/2)"}
+									padding={"calc(var(--basic-padding)/2)"}
+								>
+									<Box overflow={"hidden"}>
+										<Typography
+											variant="h2"
+											fontFamily={"Inter"}
+											fontWeight={700}
+											fontSize={18}
+											lineHeight={"normal"}
+											color="var(--input-field-text-color)"
+										>
+											Catalogue
+										</Typography>
+									</Box>
+									<Box>
+										<BaseFieldSet>
+											<BaseLabel>Product Category</BaseLabel>
+											<BaseSelect
+												disabled
+												name="category"
+												radius="10px"
+												fontsize="16px"
+												fontweight={400}
+												value={selectedProduct?.category || " "}
+												colour="var(--input-field-text-color)"
+												border="1px solid var(--input-field-border-color)"
+											>
+												<BaseOption value=" " fontsize="16px" fontweight={400}>
+													Select Product Category
+												</BaseOption>
+												{categories?.map(
+													(category: Record<string, any>, index: number) => (
+														<BaseOption
+															key={index}
+															value={category?.id}
+															fontsize="16px"
+															fontweight={400}
+														>
+															{category?.name.charAt(0).toUpperCase() +
+																category?.name.slice(1)}
+														</BaseOption>
+													),
+												)}
+											</BaseSelect>
+										</BaseFieldSet>
+									</Box>
+								</Stack>
+							</CardContent>
+						</Card>
+					</Grid>
+					<Grid size={{ mobile: 12, laptop: 6 }}>
+						<Card
+							sx={{
+								boxShadow: "none",
+								borderRadius: "12px",
+								border: "1px solid var(--input-field-border-color)",
+							}}
+						>
+							<CardContent className="card-content">
+								<Stack
+									height={"100%"}
+									gap={"calc(var(--flex-gap)/2)"}
+									padding={"calc(var(--basic-padding)/2)"}
+								>
+									<Box overflow={"hidden"}>
+										<Typography
+											variant="h2"
+											fontFamily={"Inter"}
+											fontWeight={700}
+											fontSize={18}
+											lineHeight={"normal"}
+											color="var(--input-field-text-color)"
+										>
+											Inventory
+										</Typography>
+									</Box>
+									<Stack gap={"calc(var(--flex-gap)/2)"}>
+										<Box>
+											<BaseFieldSet>
+												<BaseLabel>Quantity in Stock</BaseLabel>
+												<BaseInput
+													disabled
+													required
+													name="stock"
+													value={selectedProduct?.stock || ""}
+													placeholder="Enter Stock Quantity"
+												/>
+											</BaseFieldSet>
+										</Box>
+									</Stack>
+								</Stack>
+							</CardContent>
+						</Card>
+					</Grid>
+					<Grid size={{ mobile: 12, laptop: 6 }}>
+						<Card
+							sx={{
+								boxShadow: "none",
+								borderRadius: "12px",
+								border: "1px solid var(--input-field-border-color)",
+							}}
+						>
+							<CardContent className="card-content">
+								<Stack
+									height={"100%"}
+									gap={"calc(var(--flex-gap)/2)"}
+									padding={"calc(var(--basic-padding)/2)"}
+								>
+									<Box overflow={"hidden"}>
+										<Typography
+											variant="h2"
+											fontFamily={"Inter"}
+											fontWeight={700}
+											fontSize={18}
+											lineHeight={"normal"}
+											color="var(--input-field-text-color)"
+										>
+											Pricing
+										</Typography>
+									</Box>
+									<Box>
+										<BaseFieldSet>
+											<BaseInput
+												required
+												disabled
+												name="price"
+												value={selectedProduct?.price || ""}
+												placeholder="Enter Price"
+											/>
+										</BaseFieldSet>
+									</Box>
+								</Stack>
+							</CardContent>
+						</Card>
+					</Grid>
+					<Grid size={{ mobile: 12, laptop: 6 }}>
+						<Card
+							sx={{
+								boxShadow: "none",
+								borderRadius: "12px",
+								border: "1px solid var(--input-field-border-color)",
+							}}
+						>
+							<CardContent className="card-content">
+								<Stack
+									height={"100%"}
+									gap={"calc(var(--flex-gap)/2)"}
+									padding={"calc(var(--basic-padding)/2)"}
+								>
+									<Stack
+										direction={"row"}
+										alignItems={"center"}
+										gap={"calc(var(--flex-gap)/2)"}
+										justifyContent={"space-between"}
+									>
+										<Box overflow={"hidden"}>
+											<Typography
+												variant="h2"
+												fontFamily={"Inter"}
+												fontWeight={700}
+												fontSize={18}
+												lineHeight={"normal"}
+												color="var(--input-field-text-color)"
+											>
+												Distributor Details
+											</Typography>
+										</Box>
+										<Box overflow={"hidden"}>
+											<BaseButton
+												variant="outlined"
+												disableElevation
+												colour="var(--primary-color)"
+												border="1px solid var(--primary-color)"
+												sx={{
+													width: "100%",
+												}}
+											>
+												<Typography
+													variant={"button"}
+													fontFamily={"inherit"}
+													fontWeight={"inherit"}
+													fontSize={"inherit"}
+													lineHeight={"inherit"}
+													color={"inherit"}
+													textTransform={"inherit"}
+												>
+													Modify
+												</Typography>
+											</BaseButton>
+										</Box>
+									</Stack>
+								</Stack>
+							</CardContent>
+						</Card>
+					</Grid>
+				</Masonry>
 			</InventoryDetailsWrapper>
 		</AppLayout>
 	);

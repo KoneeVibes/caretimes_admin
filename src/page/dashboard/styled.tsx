@@ -25,6 +25,11 @@ export const DashboardWrapper = styled(Stack)(() => {
 						whiteSpace: "nowrap",
 					},
 				},
+				"& .MuiTableBody-root": {
+					"& .hide-details": {
+						display: "none",
+					},
+				},
 			},
 		},
 	};

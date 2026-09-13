@@ -34,11 +34,20 @@
 		--bright-yellow-color: #fdb022;
 		--success-color-variant: #d1fadf;
 		--error-color-variant: #ff0000;
+		--error-color-variant-II: #ff00000d;
 		--drawer-header-text-color: #2d2d2d;
 		--badge-bg-color: #f6eeed;
 		--drawer-subtitle-text-color: #424257;
 		--drawer-item-border-color: #0000001a;
 		--product-detail-header-color: #22222233;
+		--bright-blue-color: #3b82f6;
+		--bright-blue-color-variant: #3f51b50d;
+		--bright-violet-color: #8b5cf6;
+		--bright-violet-color-variant: #8f38d21a;
+		--dull-yellow-color: #fef0c7;
+		--dark-color-variant: #535862;
+		--light-color-variant: #eef2f7;
+		--row-item-border-color: #eaedf1;
 
 		--basic-padding: 2rem;
 		--basic-margin: 2rem;

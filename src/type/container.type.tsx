@@ -25,21 +25,28 @@ export type BaseTablePropsType = {
 export type OrderTablePropsType = {
 	handleViewDetailsClick: (
 		e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-		id: string | Record<any, any>
+		id: string | Record<any, any>,
 	) => void;
 } & BaseTablePropsType;
 
 export type AdminTablePropsType = {
 	handleViewDetailsClick: (
 		e: React.MouseEvent<HTMLTableRowElement, MouseEvent>,
-		id: string | Record<any, any>
+		id: string | Record<any, any>,
 	) => void;
 } & BaseTablePropsType;
 
 export type InventoryTablePropsType = {
 	handleViewDetailsClick: (
 		e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-		id: string | Record<any, any>
+		id: string | Record<any, any>,
+	) => void;
+} & BaseTablePropsType;
+
+export type TransactionTablePropsType = {
+	handleViewDetailsClick: (
+		e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+		id: string,
 	) => void;
 } & BaseTablePropsType;
 

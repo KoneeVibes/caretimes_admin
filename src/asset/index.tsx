@@ -27,3 +27,15 @@ export { ReactComponent as InventoryPendingProductsIcon } from "./icon/inventory
 export { ReactComponent as InventoryRejectedProductsIcon } from "./icon/inventory-rejected-products-card-icon.svg";
 export { ReactComponent as ExportIcon } from "./icon/export-icon.svg";
 export { ReactComponent as FilterIcon } from "./icon/filter-icon.svg";
+export { ReactComponent as OrderTotalIcon } from "./icon/order-total-card-icon.svg";
+export { ReactComponent as OrderUnfulfilledIcon } from "./icon/order-unfulfilled-card-icon.svg";
+export { ReactComponent as OrderFulfilledIcon } from "./icon/order-fulfilled-card-icon.svg";
+export { ReactComponent as OrderDisputedIcon } from "./icon/order-disputed-card-icon.svg";
+export { ReactComponent as OrderCancelledIcon } from "./icon/order-cancelled-card-icon.svg";
+export { ReactComponent as OrderDeliveryIcon } from "./icon/order-delivery-icon.svg";
+export { ReactComponent as OrderDiscountIcon } from "./icon/order-discount-icon.svg";
+export { ReactComponent as OrderSubTotalIcon } from "./icon/order-sub-total-icon.svg";
+export { ReactComponent as OrderTaxIcon } from "./icon/order-tax-icon.svg";
+export { ReactComponent as SalesVolumeIcon } from "./icon/sales-volume-icon.svg";
+export { ReactComponent as DisputedTransactionIcon } from "./icon/disputed-transactions-icon.svg";
+export { ReactComponent as CancelledTransactionIcon } from "./icon/cancelled-transactions-icon.svg";
