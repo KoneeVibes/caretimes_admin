@@ -63,17 +63,17 @@ export const Transaction = () => {
 	const transactionSummaryCards = [
 		{
 			name: "Sales Volume",
-			amount: transactionOverview?.success ?? 0,
+			amount: `₦${transactionOverview?.success?.toLocaleString() ?? 0}`,
 			icon: <SalesVolumeIcon />,
 		},
 		{
 			name: "Failed Transactions",
-			amount: transactionOverview?.failed ?? 0,
+			amount: `₦${transactionOverview?.failed?.toLocaleString() ?? 0}`,
 			icon: <DisputedTransactionIcon />,
 		},
 		{
 			name: "Abandoned Transactions",
-			amount: transactionOverview?.abandoned ?? 0,
+			amount: `₦${transactionOverview?.abandoned?.toLocaleString() ?? 0}`,
 			icon: <CancelledTransactionIcon />,
 		},
 	];

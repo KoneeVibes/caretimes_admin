@@ -106,12 +106,7 @@ export const Dashboard = () => {
 		},
 		{
 			name: "Sales Volume",
-			amount: `₦${
-				overview?.sales?.volumeByCurrency?.find(
-					(item: { currency: string; amount: string }) =>
-						item.currency === "NGN",
-				).amount ?? 0
-			}`,
+			amount: `₦${overview?.allTimeSales?.amount ?? 0}`,
 			icon: <DashboardTransactionIcon />,
 		},
 		{

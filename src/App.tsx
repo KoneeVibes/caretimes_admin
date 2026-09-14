@@ -16,6 +16,7 @@ import { AdminDetails } from "./page/adminmanagement/admindetails";
 import { InventoryDetails } from "./page/inventory/inventorydetails";
 import ScrollToTop from "./ScrollToTop";
 import { OrderDetails } from "./page/order/orderdetails";
+import { NotFoundError } from "./page/notfound";
 
 function App() {
 	return (
@@ -38,6 +39,7 @@ function App() {
 						<Route path={"/admin-management"} element={<AdminManagement />} />
 						<Route path={"/admin-management/:id"} element={<AdminDetails />} />
 					</Route>
+					<Route path="*" element={<NotFoundError />} />
 				</Routes>
 			</ScrollToTop>
 		</BrowserRouter>
