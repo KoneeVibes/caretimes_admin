@@ -94,16 +94,20 @@ export const Dashboard = () => {
 	});
 
 	const dashboardCards = [
-		{
-			name: "Customers",
-			amount: overview?.customers ?? 0,
-			icon: <DashboardCustomerIcon />,
-		},
-		{
-			name: "Distributors",
-			amount: overview?.distributors ?? 0,
-			icon: <DashboardUnsettledFundIcon />,
-		},
+		...(["super-admin", "admin"].includes(authenticatedUser?.type)
+			? [
+					{
+						name: "Customers",
+						amount: overview?.customers ?? 0,
+						icon: <DashboardCustomerIcon />,
+					},
+					{
+						name: "Distributors",
+						amount: overview?.distributors ?? 0,
+						icon: <DashboardUnsettledFundIcon />,
+					},
+				]
+			: []),
 		{
 			name: "Sales Volume",
 			amount: `₦${overview?.allTimeSales?.amount ?? 0}`,
@@ -213,7 +217,18 @@ export const Dashboard = () => {
 				<Grid container component={"div"} spacing={"var(--flex-gap)"}>
 					{dashboardCards.map((card, index) => {
 						return (
-							<Grid key={index} size={{ mobile: 12, miniTablet: 6, laptop: 4 }}>
+							<Grid
+								key={index}
+								size={{
+									mobile: 12,
+									miniTablet: 6,
+									laptop: ["super-admin", "admin"].includes(
+										authenticatedUser?.type ?? "",
+									)
+										? 4
+										: 3,
+								}}
+							>
 								<Card
 									sx={{
 										border: "none",
@@ -589,38 +604,42 @@ export const Dashboard = () => {
 												);
 											},
 										)}
-										<Box overflow={"hidden"}>
-											<BaseButton
-												border="none"
-												variant="text"
-												disableElevation
-												colour={"var(--primary-color)"}
-												sx={{
-													width: "100%",
-												}}
-												onClick={(e) =>
-													handleNavigateFromPopularityTable(
-														e,
-														activePopularCategory,
-													)
-												}
-											>
-												<Typography
-													variant={"button"}
-													fontFamily={"inherit"}
-													fontWeight={"inherit"}
-													fontSize={"inherit"}
-													lineHeight={"inherit"}
-													color={"inherit"}
-													textTransform={"inherit"}
+										{["super-admin", "admin"].includes(
+											authenticatedUser?.type,
+										) && (
+											<Box overflow={"hidden"}>
+												<BaseButton
+													border="none"
+													variant="text"
+													disableElevation
+													colour={"var(--primary-color)"}
+													sx={{
+														width: "100%",
+													}}
+													onClick={(e) =>
+														handleNavigateFromPopularityTable(
+															e,
+															activePopularCategory,
+														)
+													}
 												>
-													View{" "}
-													{activePopularCategory.charAt(0).toUpperCase() +
-														activePopularCategory.slice(1)}
-													s
-												</Typography>
-											</BaseButton>
-										</Box>
+													<Typography
+														variant={"button"}
+														fontFamily={"inherit"}
+														fontWeight={"inherit"}
+														fontSize={"inherit"}
+														lineHeight={"inherit"}
+														color={"inherit"}
+														textTransform={"inherit"}
+													>
+														View{" "}
+														{activePopularCategory.charAt(0).toUpperCase() +
+															activePopularCategory.slice(1)}
+														s
+													</Typography>
+												</BaseButton>
+											</Box>
+										)}
 									</Stack>
 								</CardContent>
 							</Card>

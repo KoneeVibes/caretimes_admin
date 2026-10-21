@@ -58,6 +58,7 @@ export const Inventory = () => {
 		setIsAddCategoryFormModalOpen,
 		isEditCategoryFormModalOpen,
 		setIsEditCategoryFormModalOpen,
+		authenticatedUser,
 	} = useContext(AppContext);
 
 	const navigate = useNavigate();
@@ -447,41 +448,17 @@ export const Inventory = () => {
 						);
 					})}
 				</Stack>
-				<Stack className="modal-call-to-action">
-					<Box overflow={"hidden"}>
-						<BaseButton
-							radius="5px"
-							disableElevation
-							variant="outlined"
-							sx={{ width: "100%" }}
-							border="1px solid var(--primary-color)"
-							onClick={handleOpenAddCategoryFormModal}
-						>
-							<Typography
-								variant={"button"}
-								fontFamily={"inherit"}
-								fontWeight={"inherit"}
-								fontSize={"inherit"}
-								lineHeight={"inherit"}
-								textTransform={"inherit"}
-								color={"var(--primary-color)"}
+				{["super-admin", "admin"].includes(authenticatedUser?.type) && (
+					<Stack className="modal-call-to-action">
+						<Box overflow={"hidden"}>
+							<BaseButton
+								radius="5px"
+								disableElevation
+								variant="outlined"
+								sx={{ width: "100%" }}
+								border="1px solid var(--primary-color)"
+								onClick={handleOpenAddCategoryFormModal}
 							>
-								Create New Category
-							</Typography>
-						</BaseButton>
-					</Box>
-					<Box overflow={"hidden"}>
-						<BaseButton
-							radius="5px"
-							disableElevation
-							variant="contained"
-							sx={{ width: "100%" }}
-							bgcolor="var(--success-color)"
-							onClick={(e) => handleToggleCategoryActivation(e, "*")}
-						>
-							{isActivating ? (
-								<CircularProgress color="inherit" className="loader" />
-							) : (
 								<Typography
 									variant={"button"}
 									fontFamily={"inherit"}
@@ -489,14 +466,40 @@ export const Inventory = () => {
 									fontSize={"inherit"}
 									lineHeight={"inherit"}
 									textTransform={"inherit"}
-									color={"var(--light-color)"}
+									color={"var(--primary-color)"}
 								>
-									Activate All
+									Create New Category
 								</Typography>
-							)}
-						</BaseButton>
-					</Box>
-				</Stack>
+							</BaseButton>
+						</Box>
+						<Box overflow={"hidden"}>
+							<BaseButton
+								radius="5px"
+								disableElevation
+								variant="contained"
+								sx={{ width: "100%" }}
+								bgcolor="var(--success-color)"
+								onClick={(e) => handleToggleCategoryActivation(e, "*")}
+							>
+								{isActivating ? (
+									<CircularProgress color="inherit" className="loader" />
+								) : (
+									<Typography
+										variant={"button"}
+										fontFamily={"inherit"}
+										fontWeight={"inherit"}
+										fontSize={"inherit"}
+										lineHeight={"inherit"}
+										textTransform={"inherit"}
+										color={"var(--light-color)"}
+									>
+										Activate All
+									</Typography>
+								)}
+							</BaseButton>
+						</Box>
+					</Stack>
+				)}
 			</Stack>
 		</Box>
 	);

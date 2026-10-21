@@ -16,7 +16,7 @@ import Masonry from "@mui/lab/Masonry";
 import { AppLayout } from "../../../container/layout/app";
 import { OrderDetailsWrapper } from "./styled";
 import { useNavigate, useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Cookies from "universal-cookie";
 import { retrieveOrderByIdService } from "../../../util/order/retrieveOrderById";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
@@ -26,6 +26,7 @@ import {
 	OrderDiscountIcon,
 	OrderSubTotalIcon,
 	OrderTaxIcon,
+	SuccessModalIcon,
 } from "../../../asset";
 import { BaseTable } from "../../../component/table";
 import { BaseButton } from "../../../component/button/styled";
@@ -33,6 +34,9 @@ import { BaseFieldSet } from "../../../component/form/fieldset/styled";
 import { BaseLabel } from "../../../component/form/label/styled";
 import { BaseSelect } from "../../../component/form/select/styled";
 import { BaseOption } from "../../../component/form/option/styled";
+import { updateOrderService } from "../../../util/order/updateOrder";
+import { BaseAlertModal } from "../../../component/modal/alert";
+import { AppContext } from "../../../context";
 
 export const OrderDetails = () => {
 	const statusColorMap = {
@@ -71,8 +75,16 @@ export const OrderDetails = () => {
 	const navigate = useNavigate();
 	const { id = "" } = useParams();
 	const matches = useMediaQuery("(max-width:250px)");
+	const {
+		isAlertModalOpen,
+		setIsAlertModalOpen,
+		alertModalInfo,
+		setAlertModalInfo,
+		authenticatedUser,
+	} = useContext(AppContext);
 
 	const [isLoading, setIsLoading] = useState(false);
+	const [error, setError] = useState<string | null>(null);
 	const [selectedOrder, setSelectedOrder] = useState<Record<
 		string,
 		any
@@ -93,7 +105,7 @@ export const OrderDetails = () => {
 	const selectedStatus = String(selectedOrder?.status || "").toLowerCase();
 	const isStatusColored = (status: string) => {
 		if (!Object.hasOwn(statusColorMap, selectedStatus)) {
-			return true;
+			return false;
 		}
 		if (selectedStatus === "fulfilled") {
 			return true;
@@ -109,6 +121,17 @@ export const OrderDetails = () => {
 	) => {
 		e.preventDefault();
 		return navigate(-1);
+	};
+
+	const handleAlertModalClickOutside = () => {
+		return setIsAlertModalOpen(true);
+	};
+
+	const handleAlertModalCallToActionClick = async (
+		e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+	) => {
+		e.preventDefault();
+		return setIsAlertModalOpen(false);
 	};
 
 	const handleChange = (
@@ -135,9 +158,37 @@ export const OrderDetails = () => {
 		e.stopPropagation();
 		if (!selectedOrder) return;
 		setIsLoading(true);
-		// we will likely call the updateOrder service here and setIsLoading(true) and then setIsLoading(false) after the service call is complete. This will ensure that the UI reflects the updated order status in real-time.
+		setError(null);
+		const reference = {
+			cancelled: "cancel",
+			fulfilled: "fulfill",
+			disputed: "dispute",
+		};
 		try {
+			const action = reference[selectedOrder.status as keyof typeof reference];
+			if (action === undefined) {
+				throw new Error(`Unsupported order status: ${selectedOrder.status}`);
+			}
+			const response = await updateOrderService(
+				TOKEN,
+				action,
+				selectedOrder.id,
+			);
+			if (response.status !== "success") {
+				throw new Error("Failed to update order status");
+			}
+			setIsAlertModalOpen(true);
+			setAlertModalInfo({
+				title: "Order updated successfully",
+				message: "The order has been successfully updated.",
+			});
 		} catch (error) {
+			console.error("Error updating order status:", error);
+			setError(
+				error instanceof Error
+					? error.message
+					: "Failed to update order status",
+			);
 		} finally {
 			setIsLoading(false);
 		}
@@ -146,6 +197,17 @@ export const OrderDetails = () => {
 	return (
 		<AppLayout pageId="Orders">
 			<OrderDetailsWrapper>
+				<BaseAlertModal
+					callToAction="Close"
+					open={isAlertModalOpen}
+					title={alertModalInfo?.title}
+					message={alertModalInfo?.message}
+					className="update-order-successful-modal"
+					handleClose={handleAlertModalClickOutside}
+					icon={<SuccessModalIcon />}
+					handleCallToAction={handleAlertModalCallToActionClick}
+					callToActionBgColor={"var(--success-color)"}
+				/>
 				<Stack
 					direction={"row"}
 					alignItems={"center"}
@@ -508,199 +570,257 @@ export const OrderDetails = () => {
 												Distributor Details
 											</Typography>
 										</Box>
-										<Box overflow={"hidden"}>
-											<BaseButton
-												variant="outlined"
-												disableElevation
-												colour="var(--primary-color)"
-												border="1px solid var(--primary-color)"
+									</Stack>
+									<Stack gap={"calc(var(--flex-gap)/2)"}>
+										{selectedOrder?.distributors?.map(
+											(
+												distributor: {
+													name: string;
+													email: string;
+													phone: string;
+													organization: string;
+												},
+												index: number,
+											) => {
+												return (
+													<Stack key={index} className="distributor">
+														{Object.entries(distributor).map(
+															([key, value], index) => (
+																<Stack
+																	key={key}
+																	className="distributor-item"
+																	sx={{
+																		borderBottom:
+																			index ===
+																			Object.entries(distributor).length - 1
+																				? null
+																				: "1px solid var(--row-item-border-color)",
+																	}}
+																>
+																	<Box overflow={"hidden"}>
+																		<Typography
+																			variant="subtitle1"
+																			fontFamily={"Gilroy"}
+																			fontWeight={400}
+																			fontSize={14}
+																			lineHeight={"normal"}
+																			textTransform="capitalize"
+																			color="var(--input-field-text-color)"
+																		>
+																			{key}
+																		</Typography>
+																	</Box>
+																	<Box overflow={"hidden"}>
+																		<Typography
+																			variant="subtitle1"
+																			fontFamily={"Gilroy"}
+																			fontWeight={400}
+																			fontSize={14}
+																			lineHeight={"normal"}
+																			textTransform={
+																				key === "email"
+																					? "lowercase"
+																					: "capitalize"
+																			}
+																			color="var(--input-field-text-color)"
+																		>
+																			{value}
+																		</Typography>
+																	</Box>
+																</Stack>
+															),
+														)}
+													</Stack>
+												);
+											},
+										)}
+									</Stack>
+								</Stack>
+							</CardContent>
+						</Card>
+					</Grid>
+					{["super-admin", "admin"].includes(authenticatedUser?.type) && (
+						<Grid size={{ mobile: 12, laptop: 6 }}>
+							<Card
+								sx={{
+									boxShadow: "none",
+									borderRadius: "12px",
+									border: "1px solid var(--input-field-border-color)",
+								}}
+							>
+								<CardContent className="card-content">
+									<Stack
+										height={"100%"}
+										gap={"calc(var(--flex-gap)/2)"}
+										padding={"calc(var(--basic-padding)/2)"}
+									>
+										<Stack
+											direction={"row"}
+											alignItems={"center"}
+											gap={"calc(var(--flex-gap)/4)"}
+										>
+											<Box overflow={"hidden"}>
+												<Typography
+													variant="h2"
+													fontFamily={"Inter"}
+													fontWeight={700}
+													fontSize={18}
+													lineHeight={"normal"}
+													color="var(--input-field-text-color)"
+												>
+													Order Status:
+												</Typography>
+											</Box>
+											<Box
+												overflow={"hidden"}
 												sx={{
-													width: "100%",
+													padding:
+														"calc(var(--basic-padding)/8) calc(var(--basic-padding)/4)",
+													color: `${
+														(
+															{
+																fulfilled: "var(--success-color) !important",
+																paid: "var(--bright-yellow-color) !important",
+																unfulfilled:
+																	"var(--bright-violet-color) !important",
+																cancelled:
+																	"var(--bright-blue-color) !important",
+																disputed: "var(--error-color) !important",
+															} as Record<string, string>
+														)[String(selectedOrder?.status).toLowerCase()]
+													}`,
+													backgroundColor: `${
+														(
+															{
+																fulfilled:
+																	"var(--success-color-variant) !important",
+																paid: "var(--dull-yellow-color) !important",
+																unfulfilled:
+																	"var(--bright-violet-color-variant) !important",
+																cancelled:
+																	"var(--bright-blue-color-variant) !important",
+																disputed:
+																	"var(--error-color-variant-II) !important",
+															} as Record<string, string>
+														)[String(selectedOrder?.status).toLowerCase()]
+													}`,
+													borderRadius: "12px",
+													display: "flex",
+													alignItems: "center",
+													justifyContent: "center",
+													width: matches ? "revert" : "fit-content",
 												}}
 											>
 												<Typography
-													variant={"button"}
-													fontFamily={"inherit"}
-													fontWeight={"inherit"}
-													fontSize={"inherit"}
-													lineHeight={"inherit"}
-													color={"inherit"}
-													textTransform={"inherit"}
+													variant="subtitle2"
+													fontFamily={"Inter"}
+													fontWeight={500}
+													fontSize={12}
+													lineHeight={"normal"}
+													color="inherit"
 												>
-													Modify
+													{selectedOrder?.status}
 												</Typography>
-											</BaseButton>
-										</Box>
-									</Stack>
-								</Stack>
-							</CardContent>
-						</Card>
-					</Grid>
-					<Grid size={{ mobile: 12, laptop: 6 }}>
-						<Card
-							sx={{
-								boxShadow: "none",
-								borderRadius: "12px",
-								border: "1px solid var(--input-field-border-color)",
-							}}
-						>
-							<CardContent className="card-content">
-								<Stack
-									height={"100%"}
-									gap={"calc(var(--flex-gap)/2)"}
-									padding={"calc(var(--basic-padding)/2)"}
-								>
-									<Stack
-										direction={"row"}
-										alignItems={"center"}
-										gap={"calc(var(--flex-gap)/4)"}
-									>
-										<Box overflow={"hidden"}>
-											<Typography
-												variant="h2"
-												fontFamily={"Inter"}
-												fontWeight={700}
-												fontSize={18}
-												lineHeight={"normal"}
-												color="var(--input-field-text-color)"
-											>
-												Order Status:
-											</Typography>
-										</Box>
-										<Box
-											overflow={"hidden"}
-											sx={{
-												padding:
-													"calc(var(--basic-padding)/8) calc(var(--basic-padding)/4)",
-												color: `${
-													(
-														{
-															fulfilled: "var(--success-color) !important",
-															paid: "var(--bright-yellow-color) !important",
-															unfulfilled:
-																"var(--bright-violet-color) !important",
-															cancelled: "var(--bright-blue-color) !important",
-															disputed: "var(--error-color) !important",
-														} as Record<string, string>
-													)[String(selectedOrder?.status).toLowerCase()]
-												}`,
-												backgroundColor: `${
-													(
-														{
-															fulfilled:
-																"var(--success-color-variant) !important",
-															paid: "var(--dull-yellow-color) !important",
-															unfulfilled:
-																"var(--bright-violet-color-variant) !important",
-															cancelled:
-																"var(--bright-blue-color-variant) !important",
-															disputed:
-																"var(--error-color-variant-II) !important",
-														} as Record<string, string>
-													)[String(selectedOrder?.status).toLowerCase()]
-												}`,
-												borderRadius: "12px",
-												display: "flex",
-												alignItems: "center",
-												justifyContent: "center",
-												width: matches ? "revert" : "fit-content",
-											}}
-										>
-											<Typography
-												variant="subtitle2"
-												fontFamily={"Inter"}
-												fontWeight={500}
-												fontSize={12}
-												lineHeight={"normal"}
-												color="inherit"
-											>
-												{selectedOrder?.status}
-											</Typography>
-										</Box>
-									</Stack>
-									<Stack className="call-to-action">
-										<Box flexGrow={1} overflow={"hidden"}>
-											<BaseFieldSet>
-												<BaseLabel>Update Order Status</BaseLabel>
-												<BaseSelect
-													name="status"
-													radius="10px"
-													fontsize="16px"
-													fontweight={400}
-													// disabled when isLoading is true, to prevent user from changing the status while the update is in progress
-													onChange={(e) => handleChange(e)}
-													value={selectedOrder?.status || " "}
-													colour="var(--input-field-text-color)"
-													border="1px solid var(--input-field-border-color)"
-													inputProps={{
-														renderValue: (selected: string) => {
-															return allowableStatuses?.includes(selected)
-																? selected
-																: "Select Order Status";
-														},
-													}}
-												>
-													<BaseOption
-														value=" "
+											</Box>
+										</Stack>
+										<Stack className="call-to-action">
+											<Box flexGrow={1} overflow={"hidden"}>
+												<BaseFieldSet>
+													<BaseLabel>Update Order Status</BaseLabel>
+													<BaseSelect
+														name="status"
+														radius="10px"
 														fontsize="16px"
 														fontweight={400}
+														// disabled when isLoading is true, to prevent user from changing the status while the update is in progress
+														onChange={(e) => handleChange(e)}
+														value={selectedOrder?.status || " "}
+														colour="var(--input-field-text-color)"
+														border="1px solid var(--input-field-border-color)"
+														inputProps={{
+															renderValue: (selected: string) => {
+																return allowableStatuses?.includes(selected)
+																	? selected
+																	: "Select Order Status";
+															},
+														}}
 													>
-														Select Order Status
-													</BaseOption>
-													{allowableStatuses
-														.filter(
-															(status) =>
-																!["unfulfilled", "paid"].includes(status),
-														)
-														?.map((status: string, index: number) => (
-															<BaseOption
-																key={index}
-																value={status}
-																fontsize="16px"
-																fontweight={400}
-															>
-																{status.charAt(0).toUpperCase() +
-																	status.slice(1)}
-															</BaseOption>
-														))}
-												</BaseSelect>
-											</BaseFieldSet>
-										</Box>
-										<Box overflow={"hidden"}>
-											<BaseButton
-												variant="contained"
-												disableElevation
-												radius="10px"
-												sx={{
-													width: "100%",
-												}}
-												onClick={handleUpdateOrderStatus}
-											>
-												{isLoading ? (
-													<CircularProgress
-														color="inherit"
-														className="loader"
-													/>
-												) : (
-													<Typography
-														variant={"button"}
-														fontFamily={"inherit"}
-														fontWeight={"inherit"}
-														fontSize={"inherit"}
-														lineHeight={"inherit"}
-														color={"inherit"}
-														textTransform={"inherit"}
-													>
-														Update
-													</Typography>
-												)}
-											</BaseButton>
-										</Box>
+														<BaseOption
+															value=" "
+															fontsize="16px"
+															fontweight={400}
+														>
+															Select Order Status
+														</BaseOption>
+														{allowableStatuses
+															.filter(
+																(status) =>
+																	!["unfulfilled", "paid"].includes(status),
+															)
+															?.map((status: string, index: number) => (
+																<BaseOption
+																	key={index}
+																	value={status}
+																	fontsize="16px"
+																	fontweight={400}
+																>
+																	{status.charAt(0).toUpperCase() +
+																		status.slice(1)}
+																</BaseOption>
+															))}
+													</BaseSelect>
+												</BaseFieldSet>
+											</Box>
+											<Box overflow={"hidden"}>
+												<BaseButton
+													variant="contained"
+													disableElevation
+													radius="10px"
+													sx={{
+														width: "100%",
+													}}
+													onClick={handleUpdateOrderStatus}
+												>
+													{isLoading ? (
+														<CircularProgress
+															color="inherit"
+															className="loader"
+														/>
+													) : (
+														<Typography
+															variant={"button"}
+															fontFamily={"inherit"}
+															fontWeight={"inherit"}
+															fontSize={"inherit"}
+															lineHeight={"inherit"}
+															color={"inherit"}
+															textTransform={"inherit"}
+														>
+															Update
+														</Typography>
+													)}
+												</BaseButton>
+											</Box>
+										</Stack>
+										{error && (
+											<Box>
+												<Typography
+													fontFamily={"Roboto"}
+													fontWeight={"500"}
+													fontSize={14}
+													lineHeight={"normal"}
+													color={"var(--error-color-variant)"}
+													whiteSpace={"normal"}
+												>
+													{error}
+												</Typography>
+											</Box>
+										)}
 									</Stack>
-								</Stack>
-							</CardContent>
-						</Card>
-					</Grid>
+								</CardContent>
+							</Card>
+						</Grid>
+					)}
 					<Grid size={{ mobile: 12, laptop: 6 }}>
 						<Card
 							sx={{

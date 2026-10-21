@@ -38,8 +38,8 @@ function App() {
 					        <Route path={"/setting"} element={<Setting />} /> */}
 						<Route path={"/admin-management"} element={<AdminManagement />} />
 						<Route path={"/admin-management/:id"} element={<AdminDetails />} />
+						<Route path="*" element={<NotFoundError />} />
 					</Route>
-					<Route path="*" element={<NotFoundError />} />
 				</Routes>
 			</ScrollToTop>
 		</BrowserRouter>

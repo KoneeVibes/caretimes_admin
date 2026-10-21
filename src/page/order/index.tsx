@@ -32,7 +32,7 @@ export const Order = () => {
 	});
 	const [filters, setFilters] = useState<
 		("fulfilled" | "disputed" | "paid" | "cancelled" | "unfulfilled")[]
-	>(["paid"]);
+	>(["fulfilled"]);
 
 	const { data: orderOverview } = useQuery({
 		queryKey: [`order-overview`, TOKEN],
@@ -72,7 +72,7 @@ export const Order = () => {
 		},
 		{
 			name: "Fulfilled Orders",
-			amount: orderOverview?.disputedOrder ?? 0,
+			amount: orderOverview?.fulfilledOrder ?? 0,
 			icon: <SalesVolumeIcon />,
 		},
 		{

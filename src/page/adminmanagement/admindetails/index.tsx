@@ -340,7 +340,7 @@ export const AdminDetails = () => {
 														lineHeight={"normal"}
 														color="var(--subtitle-text-color)"
 													>
-														{selectedAdmin?.role || "Untitled"}
+														{selectedAdmin?.type || "Untitled"}
 													</Typography>
 												</Box>
 												<Stack
@@ -741,7 +741,7 @@ export const AdminDetails = () => {
 													lineHeight={"normal"}
 													color="var(--badge-text-color)"
 												>
-													Description
+													Bio
 												</Typography>
 											</Box>
 											<Box>
@@ -753,11 +753,7 @@ export const AdminDetails = () => {
 													lineHeight={"normal"}
 													color="var(--dark-color)"
 												>
-													Lorem ipsum dolor sit amet, consectetur adipiscing
-													elit. Blandit donec cras id neque fusce rutrum morbi
-													sed pellentesque. Mauris consequat rhoncus eget sed
-													fermentum et. Turpis elementum condimentum massa
-													donec.
+													{selectedAdmin?.bio || "No description available."}
 												</Typography>
 											</Box>
 										</Stack>

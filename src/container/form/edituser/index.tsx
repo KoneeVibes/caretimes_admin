@@ -45,7 +45,7 @@ export const EditUserForm: React.FC<EditUserFormPropsType> = ({
 						value: unknown;
 						name: string;
 					};
-			  })
+			  }),
 	) => {
 		const { name, value } = e.target;
 		setFormDetails((prev) => ({
@@ -63,7 +63,7 @@ export const EditUserForm: React.FC<EditUserFormPropsType> = ({
 			const response = await editUserService(
 				TOKEN,
 				formDetails.id,
-				formDetails
+				formDetails,
 			);
 			if (response.status === "success") {
 				setIsLoading(false);
@@ -72,7 +72,7 @@ export const EditUserForm: React.FC<EditUserFormPropsType> = ({
 			} else {
 				setIsLoading(false);
 				setError(
-					"Action: Edit admin failed. Please check your credentials and try again."
+					"Action: Edit admin failed. Please check your credentials and try again.",
 				);
 			}
 		} catch (error: any) {
@@ -182,6 +182,19 @@ export const EditUserForm: React.FC<EditUserFormPropsType> = ({
 									</BaseOption>
 								))}
 							</BaseSelect>
+						</BaseFieldSet>
+					</Grid>
+					<Grid size={{ mobile: 12 }}>
+						<BaseFieldSet>
+							<BaseInput
+								multiline
+								minRows={4}
+								name="bio"
+								value={formDetails.bio}
+								placeholder="Enter Bio"
+								isError={error ? true : false}
+								onChange={(e) => handleChange(e)}
+							/>
 						</BaseFieldSet>
 					</Grid>
 				</Grid>

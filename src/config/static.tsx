@@ -32,7 +32,7 @@ export const sideNavigationItems = [
 		name: "Transactions",
 		icon: <SideNavigationTransactionsIcon />,
 		url: "/transaction",
-		userType: ["super-admin", "admin"],
+		userType: ["super-admin", "admin", "distributor"],
 	},
 	// {
 	// 	name: "Support",

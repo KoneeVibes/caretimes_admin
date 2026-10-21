@@ -1,5 +1,9 @@
 import { createContext, useState } from "react";
-import { ContextProviderPropsType, ContextType } from "../type/context.type";
+import {
+	ContextProviderPropsType,
+	ContextType,
+	SideNavigationItem,
+} from "../type/context.type";
 
 export const AppContext = createContext({} as ContextType);
 
@@ -18,6 +22,9 @@ export const AppContextProvider: React.FC<ContextProviderPropsType> = ({
 	const [isMobileSideNavigationOpen, setIsMobileSideNavigationOpen] =
 		useState(false);
 	const [isSideNavigationClosing, setIsSideNavigationClosing] = useState(false);
+	const [sideNavigationItems, setSideNavigationItems] = useState<
+		SideNavigationItem[]
+	>([]);
 	const [isAddUserFormModalOpen, setIsAddUserFormModalOpen] = useState(false);
 	const [isEditUserFormModalOpen, setIsEditUserFormModalOpen] = useState(false);
 	const [isAddProductFormModalOpen, setIsAddProductFormModalOpen] =
@@ -32,6 +39,8 @@ export const AppContextProvider: React.FC<ContextProviderPropsType> = ({
 	return (
 		<AppContext.Provider
 			value={{
+				sideNavigationItems,
+				setSideNavigationItems,
 				isMobileSideNavigationOpen,
 				setIsMobileSideNavigationOpen,
 				isSideNavigationClosing,

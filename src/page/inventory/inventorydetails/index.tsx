@@ -31,6 +31,7 @@ import { EditProductForm } from "../../../container/form/editproduct";
 import { BaseAlertModal } from "../../../component/modal/alert";
 import { approveProductService } from "../../../util/product/approveProduct";
 import { disableProductService } from "../../../util/product/disableProduct";
+import { retrieveUserByIdService } from "../../../util/usermanagement/user/retrieveUserById";
 
 export const InventoryDetails = () => {
 	const cookies = new Cookies();
@@ -90,6 +91,13 @@ export const InventoryDetails = () => {
 				console.error("Failed to fetch selected inventory:", err);
 			});
 	}, [TOKEN, id, isAlertModalOpen]);
+
+	const insertedBy = selectedProduct?.insertedBy;
+	const distributor = useQuery({
+		queryKey: ["user", TOKEN, insertedBy],
+		queryFn: () => retrieveUserByIdService(TOKEN, insertedBy!),
+		enabled: Boolean(TOKEN && insertedBy),
+	});
 
 	const { data: categories } = useQuery({
 		queryKey: [`all-category-drop-down-in-inventory-details`, TOKEN],
@@ -669,7 +677,10 @@ export const InventoryDetails = () => {
 							</CardContent>
 						</Card>
 					</Grid>
-					<Grid size={{ mobile: 12, laptop: 6 }}>
+					<Grid
+						size={{ mobile: 12, laptop: 6 }}
+						order={{ mobile: "0 !important", laptop: "2 !important" }}
+					>
 						<Card
 							sx={{
 								boxShadow: "none",
@@ -701,29 +712,136 @@ export const InventoryDetails = () => {
 												Distributor Details
 											</Typography>
 										</Box>
-										<Box overflow={"hidden"}>
-											<BaseButton
-												variant="outlined"
-												disableElevation
-												colour="var(--primary-color)"
-												border="1px solid var(--primary-color)"
-												sx={{
-													width: "100%",
-												}}
-											>
+									</Stack>
+									<Stack className="distributor">
+										<Stack
+											className="distributor-item"
+											sx={{
+												borderBottom: "1px solid var(--row-item-border-color)",
+											}}
+										>
+											<Box overflow={"hidden"}>
 												<Typography
-													variant={"button"}
-													fontFamily={"inherit"}
-													fontWeight={"inherit"}
-													fontSize={"inherit"}
-													lineHeight={"inherit"}
-													color={"inherit"}
-													textTransform={"inherit"}
+													variant="subtitle1"
+													fontFamily={"Gilroy"}
+													fontWeight={400}
+													fontSize={14}
+													lineHeight={"normal"}
+													textTransform="capitalize"
+													color="var(--input-field-text-color)"
 												>
-													Modify
+													Name
 												</Typography>
-											</BaseButton>
-										</Box>
+											</Box>
+											<Box overflow={"hidden"}>
+												<Typography
+													variant="subtitle1"
+													fontFamily={"Gilroy"}
+													fontWeight={400}
+													fontSize={14}
+													lineHeight={"normal"}
+													textTransform={"capitalize"}
+													color="var(--input-field-text-color)"
+												>
+													{distributor.data?.firstName}{" "}
+													{distributor.data?.lastName}
+												</Typography>
+											</Box>
+										</Stack>
+										<Stack
+											className="distributor-item"
+											sx={{
+												borderBottom: "1px solid var(--row-item-border-color)",
+											}}
+										>
+											<Box overflow={"hidden"}>
+												<Typography
+													variant="subtitle1"
+													fontFamily={"Gilroy"}
+													fontWeight={400}
+													fontSize={14}
+													lineHeight={"normal"}
+													textTransform="capitalize"
+													color="var(--input-field-text-color)"
+												>
+													Email
+												</Typography>
+											</Box>
+											<Box overflow={"hidden"}>
+												<Typography
+													variant="subtitle1"
+													fontFamily={"Gilroy"}
+													fontWeight={400}
+													fontSize={14}
+													lineHeight={"normal"}
+													textTransform={"lowercase"}
+													color="var(--input-field-text-color)"
+												>
+													{distributor.data?.email}
+												</Typography>
+											</Box>
+										</Stack>
+										<Stack
+											className="distributor-item"
+											sx={{
+												borderBottom: "1px solid var(--row-item-border-color)",
+											}}
+										>
+											<Box overflow={"hidden"}>
+												<Typography
+													variant="subtitle1"
+													fontFamily={"Gilroy"}
+													fontWeight={400}
+													fontSize={14}
+													lineHeight={"normal"}
+													textTransform="capitalize"
+													color="var(--input-field-text-color)"
+												>
+													Phone
+												</Typography>
+											</Box>
+											<Box overflow={"hidden"}>
+												<Typography
+													variant="subtitle1"
+													fontFamily={"Gilroy"}
+													fontWeight={400}
+													fontSize={14}
+													lineHeight={"normal"}
+													textTransform={"capitalize"}
+													color="var(--input-field-text-color)"
+												>
+													{distributor.data?.phone}
+												</Typography>
+											</Box>
+										</Stack>
+										<Stack className="distributor-item">
+											<Box overflow={"hidden"}>
+												<Typography
+													variant="subtitle1"
+													fontFamily={"Gilroy"}
+													fontWeight={400}
+													fontSize={14}
+													lineHeight={"normal"}
+													textTransform="capitalize"
+													color="var(--input-field-text-color)"
+												>
+													Organization
+												</Typography>
+											</Box>
+											<Box overflow={"hidden"}>
+												<Typography
+													variant="subtitle1"
+													fontFamily={"Gilroy"}
+													fontWeight={400}
+													fontSize={14}
+													lineHeight={"normal"}
+													textTransform={"capitalize"}
+													color="var(--input-field-text-color)"
+												>
+													{distributor.data?.organization}
+												</Typography>
+											</Box>
+										</Stack>
 									</Stack>
 								</Stack>
 							</CardContent>

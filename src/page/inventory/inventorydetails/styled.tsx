@@ -14,6 +14,14 @@ export const InventoryDetailsWrapper = styled(Stack)(({ theme }) => {
 			display: "flex",
 			flexDirection: "column",
 			height: "inherit",
+			"& .distributor": {
+				"& .distributor-item": {
+					flexDirection: "row",
+					gap: "calc(var(--flex-gap))",
+					justifyContent: "space-between",
+					padding: "calc(var(--basic-padding)/2) 0",
+				},
+			},
 		},
 		"& .card-content:last-child": {
 			paddingBottom: 0,

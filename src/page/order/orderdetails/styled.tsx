@@ -43,6 +43,17 @@ export const OrderDetailsWrapper = styled(Stack)(({ theme }) => {
 				justifyContent: "space-between",
 				padding: "calc(var(--basic-padding)/2)",
 			},
+			"& .distributor": {
+				border: "1px solid var(--row-item-border-color)",
+				borderRadius: "10px",
+				padding: "calc(var(--basic-padding)/2)",
+				"& .distributor-item": {
+					flexDirection: "row",
+					gap: "calc(var(--flex-gap))",
+					justifyContent: "space-between",
+					padding: "calc(var(--basic-padding)/2) 0",
+				},
+			},
 		},
 		"& .card-content:last-child": {
 			paddingBottom: 0,

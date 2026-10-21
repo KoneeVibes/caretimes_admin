@@ -22,6 +22,7 @@ export const AddUserForm = () => {
 		email: "",
 		phone: "",
 		type: " ",
+		bio: "",
 	};
 
 	const {
@@ -43,7 +44,7 @@ export const AddUserForm = () => {
 						value: unknown;
 						name: string;
 					};
-			  })
+			  }),
 	) => {
 		const { name, value } = e.target;
 		setFormDetails((prev) => ({
@@ -67,7 +68,7 @@ export const AddUserForm = () => {
 			const response = await addUserService(
 				TOKEN,
 				formDetails.type,
-				formDetails
+				formDetails,
 			);
 			if (response.status === "success") {
 				setIsLoading(false);
@@ -77,7 +78,7 @@ export const AddUserForm = () => {
 			} else {
 				setIsLoading(false);
 				setError(
-					"Action: Add admin failed. Please check your credentials and try again."
+					"Action: Add admin failed. Please check your credentials and try again.",
 				);
 			}
 		} catch (error: any) {
@@ -187,6 +188,19 @@ export const AddUserForm = () => {
 									</BaseOption>
 								))}
 							</BaseSelect>
+						</BaseFieldSet>
+					</Grid>
+					<Grid size={{ mobile: 12 }}>
+						<BaseFieldSet>
+							<BaseInput
+								multiline
+								minRows={4}
+								name="bio"
+								value={formDetails.bio}
+								placeholder="Enter Bio"
+								isError={error ? true : false}
+								onChange={(e) => handleChange(e)}
+							/>
 						</BaseFieldSet>
 					</Grid>
 				</Grid>
