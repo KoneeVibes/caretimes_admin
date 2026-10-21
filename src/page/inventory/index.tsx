@@ -605,35 +605,37 @@ export const Inventory = () => {
 								</Typography>
 							</BaseButton>
 						</Box>
-						<Box overflow={"hidden"}>
-							<BaseButton
-								variant="outlined"
-								disableElevation
-								sx={{
-									width: { mobile: "100%", miniTablet: "auto" },
-									padding: {
-										mobile:
-											"calc(var(--basic-padding)/2) calc(var(--basic-padding))",
-										miniTablet: "calc(var(--basic-padding)/2)",
-										tablet:
-											"calc(var(--basic-padding)/2) calc(var(--basic-padding))",
-									},
-								}}
-								onClick={() => handleToggleManageCategoryDrawer(true)}
-							>
-								<Typography
-									variant={"button"}
-									fontFamily={"inherit"}
-									fontWeight={"inherit"}
-									fontSize={"inherit"}
-									lineHeight={"inherit"}
-									color={"inherit"}
-									textTransform={"inherit"}
+						{["super-admin", "admin"].includes(authenticatedUser?.type) && (
+							<Box overflow={"hidden"}>
+								<BaseButton
+									variant="outlined"
+									disableElevation
+									sx={{
+										width: { mobile: "100%", miniTablet: "auto" },
+										padding: {
+											mobile:
+												"calc(var(--basic-padding)/2) calc(var(--basic-padding))",
+											miniTablet: "calc(var(--basic-padding)/2)",
+											tablet:
+												"calc(var(--basic-padding)/2) calc(var(--basic-padding))",
+										},
+									}}
+									onClick={() => handleToggleManageCategoryDrawer(true)}
 								>
-									Manage Category
-								</Typography>
-							</BaseButton>
-						</Box>
+									<Typography
+										variant={"button"}
+										fontFamily={"inherit"}
+										fontWeight={"inherit"}
+										fontSize={"inherit"}
+										lineHeight={"inherit"}
+										color={"inherit"}
+										textTransform={"inherit"}
+									>
+										Manage Category
+									</Typography>
+								</BaseButton>
+							</Box>
+						)}
 					</Stack>
 				</Stack>
 				<Grid container component={"div"} spacing={"calc(var(--flex-gap))"}>
