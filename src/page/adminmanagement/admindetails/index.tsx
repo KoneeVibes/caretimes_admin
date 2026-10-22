@@ -752,6 +752,7 @@ export const AdminDetails = () => {
 													fontSize={16}
 													lineHeight={"normal"}
 													color="var(--dark-color)"
+													whiteSpace={"normal"}
 												>
 													{selectedAdmin?.bio || "No description available."}
 												</Typography>
